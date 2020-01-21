@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Board from "react-trello";
 import debug from "../../utils/debug";
-
 
 const handleDragStart = (cardId, laneId) => {
     console.log('drag started');
@@ -16,7 +15,7 @@ const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
     console.log(`targetLaneId: ${targetLaneId}`);
 };
 
-const App = () => {
+const Dashboard = () => {
     const [boardData, setBoardData] = useState({ lanes: []});
     const [eventBus, setEventBus] = useState([]);
 
@@ -32,7 +31,7 @@ const App = () => {
     //         console.log("Response", response);
     //         setBoardData(response);
     //     };
-        // fetchData();
+    // fetchData();
     // }, []);
 
     const shouldReceiveNewData = nextData => {
@@ -72,4 +71,4 @@ const App = () => {
 };
 
 
-export default App;
+export default Dashboard;
