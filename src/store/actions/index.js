@@ -2,7 +2,7 @@ import {
     ADD_CARD,
     EDIT_CARD,
     DELETE_CARD,
-    MOVE_CARD,
+    MOVE_CARD, LOGIN,
 } from "./types";
 
 export const addCard = (cardData) => async dispatch => {
@@ -18,4 +18,11 @@ export const addCard = (cardData) => async dispatch => {
             }
         }
     });
+};
+
+export const authenticate = (payload) => async dispatch =>{
+    dispatch({
+        type: LOGIN,
+        payload: payload
+    })
 };

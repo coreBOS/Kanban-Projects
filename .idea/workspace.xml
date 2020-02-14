@@ -2,34 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="62307e05-0f45-4e25-93cd-5af93151b5c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/main/Dashboard.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routing/PrivateRoute.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routing/Routes.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/store/persist/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/action-types/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/actions/authentication/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/actions/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/actions/locations/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/actions/team/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/actions/user/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/persist/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/reducers/appReducer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/reducers/authReducer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/reducers/controlReducer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/reducers/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/reducers/teamReducer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/joseph.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/api/webservice/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/lib/WSClient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/main/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/main/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/main/Dashboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/store/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/actions/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/store/actions/types/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/actions/types/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/store/reducers/cardReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/cardReducer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/reducers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/reducers/laneReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/laneReducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/api/config/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/api/index.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,8 +48,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -122,11 +109,25 @@
       <workItem from="1579235305804" duration="11348000" />
       <workItem from="1579392749540" duration="561000" />
       <workItem from="1579583999356" duration="2358000" />
-      <workItem from="1579606551737" duration="4355000" />
+      <workItem from="1579606551737" duration="5101000" />
+      <workItem from="1579827876088" duration="1460000" />
+      <workItem from="1580475508290" duration="360000" />
+      <workItem from="1580878265387" duration="7006000" />
+      <workItem from="1581410300984" duration="4785000" />
+      <workItem from="1581525392942" duration="2119000" />
+      <workItem from="1581573837550" duration="2146000" />
+      <workItem from="1581615427650" duration="197000" />
+      <workItem from="1581667075937" duration="6755000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="240" y="65" key="#ESLint" timestamp="1580402270952">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="240" y="65" key="#ESLint/0.0.1280.800@0.0.1280.800" timestamp="1580402270952" />
   </component>
 </project>

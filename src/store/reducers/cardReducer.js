@@ -1,4 +1,4 @@
-import {ADD_CARD, DELETE_CARD, EDIT_CARD, MOVE_CARD} from "../actions/types";
+import {ADD_CARD, DELETE_CARD, EDIT_CARD, LOGIN, MOVE_CARD} from "../actions/types";
 
 const initialState = {};
 
@@ -11,6 +11,9 @@ function cardReducer(state = initialState, action) {
         case DELETE_CARD:
             return Object.assign({}, state, {});
         case MOVE_CARD:
+            return Object.assign({}, state, {});
+        case LOGIN:
+            localStorage.setItem("sessionName", action.payload.sessionName);
             return Object.assign({}, state, {});
         default:
             return state;
