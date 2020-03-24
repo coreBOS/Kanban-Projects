@@ -1,0 +1,109 @@
+html, body{
+    font-family: "Arial", SansSerif, serif;
+    margin: 0 !important;
+}
+.modal{
+    float: right !important;
+    width: 450px;
+    height: 100vh;
+    display: block !important;
+    position: absolute !important;
+    top: 0;
+    left: unset;
+    right: 0 !important;
+    background: #fff;
+    z-index: 99;
+    box-shadow: -10px 0 10px 1px #393939;
+    -webkit-box-shadow: -2px 0 5px 1px #393939;
+    -moz-box-shadow: -10px 0 10px 1px #393939;
+    -webkit-transform: translate3d(0%, 0, 0);
+    -ms-transform: translate3d(0%, 0, 0);
+    -o-transform: translate3d(0%, 0, 0);
+    transform: translate3d(0%, 0, 0);
+}
+
+.fade{
+    background: #fff;
+    opacity: 1 !important;
+}
+
+.modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    height: 100vh;
+    width: 100%;
+    right: 0;
+    z-index: 10050;
+    -webkit-transform: translate3d(0%, 0, 0);
+    -ms-transform: translate3d(0%, 0, 0);
+    -o-transform: translate3d(0%, 0, 0);
+    transform: translate3d(0%, 0, 0);
+}
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
+.modal.right .modal-body {
+    padding: 15px 15px 15px;
+}
+
+.modal.right.fade .modal-dialog {
+    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+    -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+    -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+    transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+    right: 0;
+}
+
+.modal-content {
+    border-radius: 0;
+    border: none;
+}
+
+.modal-header {
+    display: inline-block !important;
+    border-bottom-color: #EEEEEE;
+    background-color: #ffffff !important;
+}
+
+.modal-header h4{
+    font-size: 14px !important;
+}
+
+.modal-title{
+    display: inline !important;
+    margin-left: 10px;
+}
+
+.modal-header button{
+    outline: none !important;
+}
+
+.project-comments .card{
+    border: none !important;
+}
+.project-comments .card .card-body{
+    margin-bottom: 0 !important;
+    padding: 5px
+}
+.project-comments > .card > .card-body > p{
+    margin-bottom: 0 !important;
+}
+
+.project-comments a{
+    text-align: center !important;
+}
+
+.project-comments hr{
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+.ql-toolbar.ql-snow{
+    border-radius: 5px 5px 0 0 !important;
+}
+.ql-container.ql-snow{
+    border-radius: 0 0 5px 5px !important;
+}
