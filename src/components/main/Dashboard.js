@@ -4,6 +4,8 @@ import debug from "../../utils/debug";
 import {webService} from "../../utils/api/webservice";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
+import AddTaskCardForm from "../utils/AddCard";
+import AddTaskLaneForm from "../utils/AddLane";
 
 const handleDragStart = (cardId, laneId) => {
     console.log('drag started');
@@ -29,7 +31,9 @@ const Dashboard = () => {
     const lanesData = [];
     const cardsData = [];
     const components = {
-        Card: ProjectTaskCard
+        Card: ProjectTaskCard,
+        NewCardForm: AddTaskCardForm,
+        NewLaneForm: AddTaskLaneForm
     };
 
     /**
