@@ -36,28 +36,6 @@ const Dashboard = () => {
         NewLaneForm: AddTaskLaneForm
     };
 
-    /**
-     * projecttaskname: "Charles Davies"
-     projecttask_no: "prjt-0000692"
-     projecttaskpriority: "normal"
-     projecttasktype: "design"
-     projecttasknumber: "2147483647"
-     projectid: "33x5991"
-     assigned_user_id: "19x5"
-     email: "soledad_mockus@yahoo.com"
-     projecttaskstatus: ""
-     created_user_id: "19x1"
-     projecttaskprogress: "30%"
-     projecttaskhours: "134"
-     startdate: "2016-11-04"
-     enddate: "2016-11-20"
-     createdtime: "2015-05-26 01:21:08"
-     modifiedtime: "2015-12-19 15:36:10"
-     modifiedby: "19x1"
-     description: "non ante bibendum ullamcorper. Duis cursus, diam at pretium aliquet, metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean"
-     id: "32x7551"
-     */
-
     useEffect(() => {
         const fetchData = async () => {
             await webService.doLogin('admin', 'cdYTBpiMR9RfGgO', false)
