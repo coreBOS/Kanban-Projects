@@ -14,7 +14,7 @@ class AddTaskLaneForm extends Component {
                 <Col>
                     <Form style={{padding: '0 5px'}}>
                         <FormGroup>
-                            <Input type="text" ref={setInputRef} placeholder="Task Name" bsSize={'sm'}/>
+                            <Input type="text" innerRef={setInputRef} placeholder="Task Name" bsSize={'sm'}/>
                         </FormGroup>
                         <FormGroup style={{marginBottom: '2px'}}>
                             <Button color={'success'} className={'pull-left'} size={'sm'} onClick={handleAdd}>

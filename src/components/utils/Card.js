@@ -1,11 +1,8 @@
 import React from "react";
 import {connect} from "react-redux";
-import {MovableCardWrapper } from 'react-trello/src/styles/Base'
+import {MovableCardWrapper } from 'react-trello/dist/styles/Base'
 const ProjectTaskCard = (props) => {
-
-    const getTaskLabel = (data, type) => {
-
-    };
+    console.log("Card Props: ", props);
 
     const taskPriorityLabel = (priority) => {
         switch (priority) {
