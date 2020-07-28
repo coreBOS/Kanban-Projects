@@ -60,42 +60,36 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await webService.doLogin('admin', 'cdYTBpiMR9RfGgO', false)
-                .then(async function (response) {
-                    const query = 'select * from ProjectTask where projectid=33x5991';
-                    await webService.doQuery(query)
-                        .then(async function (tasksResponse) {
-                            console.log("Task Response: ", tasksResponse);
-                            await tasksResponse.map(task => {
-                                const cardObj = {
-                                    'id': task.id,
-                                    'taskNumber': task.projecttask_no,
-                                    'taskDescription': task.description,
-                                    'taskProgress': task.projecttaskprogress,
-                                    'taskPriority': task.projecttaskpriority,
-                                    'assignedTo': task,
-                                    'startDate': task.startdate,
-                                    'endDate': task.enddate
-                                };
-                                cardsData.push(cardObj);
+            const query = 'select * from ProjectTask where projectid=33x5991';
+            await webService.doQuery(query)
+                .then(async function (tasksResponse) {
+                    console.log("Task Response: ", tasksResponse);
+                    await tasksResponse.map(task => {
+                        const cardObj = {
+                            'id': task.id,
+                            'taskNumber': task.projecttask_no,
+                            'taskDescription': task.description,
+                            'taskProgress': task.projecttaskprogress,
+                            'taskPriority': task.projecttaskpriority,
+                            'assignedTo': task,
+                            'startDate': task.startdate,
+                            'endDate': task.enddate
+                        };
+                        cardsData.push(cardObj);
 
-                                const taskObj = {
-                                    'id': task.projecttask_no,
-                                    'title': task.projecttaskname,
-                                    'label': task.projecttaskhours,
-                                    'cards': cardsData
-                                };
-                                lanesData.push(taskObj)
-                            });
-                            console.log("Lane Data", lanesData);
-                            setBoardData({...boardData, ['lanes']: lanesData});
-                        })
-                        .catch(function (tasksError) {
-                            console.log("Error: ", tasksError)
-                        })
+                        const taskObj = {
+                            'id': task.projecttask_no,
+                            'title': task.projecttaskname,
+                            'label': task.projecttaskhours,
+                            'cards': cardsData
+                        };
+                        lanesData.push(taskObj)
+                    });
+                    console.log("Lane Data", lanesData);
+                    setBoardData({...boardData, ['lanes']: lanesData});
                 })
-                .catch(function (error) {
-                    console.log("error", error)
+                .catch(function (tasksError) {
+                    console.log("Error: ", tasksError)
                 })
         };
         fetchData();
