@@ -1406,6 +1406,13 @@
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-7.2.1.tgz#2ad4e844175a3738cb9e7064be5ea070b8863a1c"
   integrity sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==
 
+"@toast-ui/react-grid@^4.15.0":
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/react-grid/-/react-grid-4.15.0.tgz#733da498037c1f6dc83300654184f3a98c9de987"
+  integrity sha512-tArRov923E3zmusNaQDR9LikUz+7b1j6Wu0idtr9cvOkeVcq9AEPPu/e4QvLV/ug1ey0KBzGfml9ch7Vgfi6fw==
+  dependencies:
+    tui-grid "^4.15.0"
+
 "@types/babel__core@^7.1.0":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.3.tgz#e441ea7df63cd080dfcd02ab199e6d16a735fc30"
@@ -10604,6 +10611,14 @@ tui-grid@^4.14.0:
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/tui-grid/-/tui-grid-4.14.0.tgz#e53b9ce4abc9e239a9f71c816f371f06a465e552"
   integrity sha512-Z7BScRA4NJariyIfFFXOM7OiMP3d3DDO0pTA0rPYTyWMFoQfui4rpPSAk+A6J9tLneT8m2OKRvFxNX3jBivUbQ==
+  dependencies:
+    tui-date-picker "^3.3.3"
+    tui-pagination "^3.3.2"
+
+tui-grid@^4.15.0:
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/tui-grid/-/tui-grid-4.15.0.tgz#0691556b077f44119448c122d971152e872397d1"
+  integrity sha512-DigSI/9PvF0LF8Z9By6Afl2s/MTa0cPd//595IMywmfdfjEBttl84cCuChxL4aYyq/UWWimKGD75Tj7fa8lkLg==
   dependencies:
     tui-date-picker "^3.3.3"
     tui-pagination "^3.3.2"

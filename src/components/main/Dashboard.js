@@ -4,8 +4,11 @@ import Projects from "../project/Projects";
 const Dashboard = () => {
 
     return (
-        <Projects />
+        <div className={'kanban-container'} style={{padding: '0 15px'}}>
+            <Projects />
+        </div>
     )
+    
 };
 
 
