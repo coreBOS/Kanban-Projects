@@ -6,7 +6,7 @@ import 'tui-grid/dist/tui-grid.css';
 import Grid from '@toast-ui/react-grid';
 
 import {
-    PROJECTS,
+    PROJECT,
   } from '../../settings/constants';
 
 
@@ -17,11 +17,25 @@ const Projects = () => {
     const [limit, setLimit] = useState(10);
 
     const projectColumns = [
+/*         {
+            rowHeaders: [
+                {
+                  type: 'checkbox',
+                  header: `
+                    <label for="all-checkbox" class="checkbox">
+                      <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+                      <span class="custom-input"></span>
+                    </label>
+                  `
+                }
+            ]
+        }, */
         { 
             header: 'Project name', 
             name: 'projectname',
-            formatter: function(rowData) {
-                return `<a href="#${PROJECTS}/${rowData.row.id}"> ${rowData.value} </a>`;
+            formatter: (rowData) => {
+                return `<a href="#${PROJECT}?pid=${rowData.row.id}"> ${rowData.value} </a>`;
+                //return `<Link to={#${PROJECT}/${rowData.row.id}}>${rowData.value}</Link>`;
             } 
         }, 
         { header: 'Project #', name: 'project_no' }, 

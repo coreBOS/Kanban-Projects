@@ -4,12 +4,14 @@ import {
   LOGIN,
   DASHBOARD,
   PROJECTS,
-} from './settings/constants';
+  PROJECT,
+} from './settings/constants'; 
 
 import AuthProvider, { AuthContext } from './context/auth';
 import Login from './components/Login';
 import Dashboard from './components/main/Dashboard';
 import Projects from './components/project/Projects';
+import Project from './components/project/Project';
 
 function PrivateRoute({ children, ...rest }) {
   const { isAuthenticated } = useContext(AuthContext);
@@ -42,6 +44,9 @@ const Routes = () => {
           </PrivateRoute>
           <PrivateRoute exact={true} path={PROJECTS}>
             <Projects />
+          </PrivateRoute>
+          <PrivateRoute exact={true} path={PROJECT}>
+            <Project />
           </PrivateRoute>
           <Route path={LOGIN}>
             <Login />

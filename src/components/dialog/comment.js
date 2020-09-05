@@ -30,21 +30,15 @@ const CommentDialog = (props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await webService.doLogin('admin', 'cdYTBpiMR9RfGgO', false)
-                .then(async function (response) {
-                    const query = `select * from ProjectTask where id=${props.projectTaskId}`;
-                    await webService.doQuery(query)
-                        .then(async function (taskResponse) {
-                            console.log("Task Response: ", taskResponse);
-                            setProjectTask(taskResponse[0]);
-                            setLoading(false)
-                        })
-                        .catch(function (taskError) {
-                            console.log("Error: ", taskError)
-                        })
+            const query = `SELECT * FROM ProjectTask WHERE id=${props.projectTaskId}`;
+            await webService.doQuery(query)
+                .then(async function (taskResponse) {
+                    console.log("Task Response: ", taskResponse);
+                    setProjectTask(taskResponse[0]);
+                    setLoading(false)
                 })
-                .catch(function (error) {
-                    console.log("error", error)
+                .catch(function (taskError) {
+                    console.log("Error: ", taskError)
                 })
         };
         fetchData();
