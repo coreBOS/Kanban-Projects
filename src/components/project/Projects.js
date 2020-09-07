@@ -14,7 +14,7 @@ const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [offset, setOffset] = useState(0);
     const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(20);
 
     const projectColumns = [
 /*         {

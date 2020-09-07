@@ -1,5 +1,6 @@
 import React, {useState, useEffect, Link } from "react";
 import {webService} from "../../utils/api/webservice";
+import { TASK_STATUS } from '../../settings/constants'; 
 import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
@@ -21,10 +22,10 @@ const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
 };
 
 const ProjectTasks = (props) => {
-    const [projectTasks, setProjectTask] = useState([]);
+    const [projectTasks, setProjectTasks] = useState([]);
     const [offset, setOffset] = useState(0);
     const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(20);
 
     const [boardData, setBoardData] = useState({lanes: []});
     const [eventBus, setEventBus] = useState([]);
@@ -42,31 +43,37 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         const fetchProject = async () => {
-            const query = `SELECT * FROM ProjectTask WHERE projectid = ${props?.projectId}  ORDER BY id DESC LIMIT ${offset}, ${limit}`;
-            console.log(query);
+            const query = `SELECT * FROM ProjectTask WHERE projectid = ${props?.projectId}  ORDER BY id DESC`;
             await webService.doQuery(query)
                 .then(async function (result) {
-                    setProjectTask(result);
-                    await result.map(task => {
-                        const cardObj = {
-                            'id': task.id,
-                            'taskNumber': task.projecttask_no,
-                            'taskDescription': task.description,
-                            'taskProgress': task.projecttaskprogress,
-                            'taskPriority': task.projecttaskpriority,
-                            'assignedTo': task,
-                            'startDate': task.startdate,
-                            'endDate': task.enddate
-                        };
-                        cardsData.push(cardObj);
+                    setProjectTasks(result);
+                    for (const key in TASK_STATUS) {
+                        if (TASK_STATUS.hasOwnProperty(key)) {
+                            lanesData.push({
+                                'id': TASK_STATUS[key],
+                                'title': TASK_STATUS[key] || key,
+                                'label': '0',
+                                'cards': [],
+                            });
+                        }
+                    }
 
-                        const taskObj = {
-                            'id': task.projecttask_no,
-                            'title': task.projecttaskname,
-                            'label': task.projecttaskhours,
-                            'cards': cardsData
-                        };
-                        lanesData.push(taskObj)
+                    await result.map(task => {
+                        lanesData.map(lane => {
+                            if(task.projecttaskstatus === lane.id){
+                                lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
+                                lane.cards.push({
+                                    'id': task.id,
+                                    'taskNumber': task.projecttask_no,
+                                    'taskDescription': task.description,
+                                    'taskProgress': task.projecttaskprogress,
+                                    'taskPriority': task.projecttaskpriority,
+                                    'assignedTo': task,
+                                    'startDate': task.startdate,
+                                    'endDate': task.enddate
+                                });
+                            }
+                        });
                     });
                     setBoardData({...boardData, ['lanes']: lanesData});
                 })
