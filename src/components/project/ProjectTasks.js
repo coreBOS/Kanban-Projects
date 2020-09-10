@@ -1,6 +1,6 @@
-import React, {useState, useEffect, Link } from "react";
-import {webService} from "../../utils/api/webservice";
-import { TASK_STATUS } from '../../settings/constants'; 
+import React, { useState, useEffect, Link } from "react";
+import { webService } from "../../utils/api/webservice";
+import { TASK_STATUS } from '../../settings/constants';
 import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
@@ -22,19 +22,15 @@ const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
 };
 
 const ProjectTasks = (props) => {
-    const [projectTasks, setProjectTasks] = useState([]);
-    const [offset, setOffset] = useState(0);
-    const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(20);
 
-    const [boardData, setBoardData] = useState({lanes: []});
+    const [projectTasks, setProjectTasks] = useState([]);
+    const [boardData, setBoardData] = useState({ lanes: [] });
     const [eventBus, setEventBus] = useState([]);
     const [clickedProjectTaskId, setClickedProjectTaskId] = useState('');
     const [clickedProjectTaskMetadata, setClickedProjectTaskMetadata] = useState('');
     const [clickedProjectTaskLaneId, setClickedProjectTaskLaneId] = useState('');
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const lanesData = [];
-    const cardsData = [];
     const components = {
         Card: ProjectTaskCard,
         NewCardForm: AddTaskCardForm,
@@ -42,47 +38,48 @@ const ProjectTasks = (props) => {
     };
 
     useEffect(() => {
-        const fetchProject = async () => {
-            const query = `SELECT * FROM ProjectTask WHERE projectid = ${props?.projectId}  ORDER BY id DESC`;
-            await webService.doQuery(query)
-                .then(async function (result) {
-                    setProjectTasks(result);
-                    for (const key in TASK_STATUS) {
-                        if (TASK_STATUS.hasOwnProperty(key)) {
-                            lanesData.push({
-                                'id': TASK_STATUS[key],
-                                'title': TASK_STATUS[key] || key,
-                                'label': '0',
-                                'cards': [],
+        fetchProjectTask(props?.projectId);
+    }, []);
+
+    const fetchProjectTask = (projectId) => {
+        const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
+        webService.doQuery(query)
+            .then(async function (result) {
+                setProjectTasks(result);
+                for (const key in TASK_STATUS) {
+                    if (TASK_STATUS.hasOwnProperty(key)) {
+                        lanesData.push({
+                            'id': TASK_STATUS[key],
+                            'title': TASK_STATUS[key] || key,
+                            'label': '0',
+                            'cards': [],
+                        });
+                    }
+                }
+
+                await result.map(task => {
+                    lanesData.map(lane => {
+                        if (task.projecttaskstatus === lane.id) {
+                            lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
+                            lane.cards.push({
+                                'id': task.id,
+                                'taskNumber': task.projecttask_no,
+                                'taskDescription': task.description,
+                                'taskProgress': task.projecttaskprogress,
+                                'taskPriority': task.projecttaskpriority,
+                                'assignedTo': task,
+                                'startDate': task.startdate,
+                                'endDate': task.enddate
                             });
                         }
-                    }
-
-                    await result.map(task => {
-                        lanesData.map(lane => {
-                            if(task.projecttaskstatus === lane.id){
-                                lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
-                                lane.cards.push({
-                                    'id': task.id,
-                                    'taskNumber': task.projecttask_no,
-                                    'taskDescription': task.description,
-                                    'taskProgress': task.projecttaskprogress,
-                                    'taskPriority': task.projecttaskpriority,
-                                    'assignedTo': task,
-                                    'startDate': task.startdate,
-                                    'endDate': task.enddate
-                                });
-                            }
-                        });
                     });
-                    setBoardData({...boardData, ['lanes']: lanesData});
-                })
-                .catch(function (error) {
-                    console.log("Error: ", error)
-                })
-        };
-        fetchProject();
-    }, []); 
+                });
+                setBoardData({ ...boardData, ['lanes']: lanesData });
+            })
+            .catch(function (error) {
+                console.log("Error: ", error)
+            })
+    };
 
     const shouldReceiveNewData = nextData => {
         console.log('New card has been added');
@@ -123,9 +120,9 @@ const ProjectTasks = (props) => {
                 components={components}
                 onLaneUpdate={(laneId, data) => debug(`onLaneUpdate: ${laneId} -> ${data.title}`)}
                 onLaneAdd={t => debug('You added a lane with title ' + t.title)}
-                tagStyle={{fontSize: '80%'}}
+                tagStyle={{ fontSize: '80%' }}
             />
-            {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose}/> : null}
+            {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} /> : null}
         </div>
     )
 
