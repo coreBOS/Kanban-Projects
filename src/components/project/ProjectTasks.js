@@ -39,25 +39,34 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         fetchProjectTask(props?.projectId);
+
+        /* webService.doDescribe('ProjectTask')
+            .then(async function (result) {
+                console.log("ProjectTask", result)
+            })
+            .catch(function (error) {
+                console.log("Error: ", error)
+            }) */
     }, []);
 
     const fetchProjectTask = (projectId) => {
+        for (const key in TASK_STATUS) {
+            if (TASK_STATUS.hasOwnProperty(key)) {
+                lanesData.push({
+                    'id': TASK_STATUS[key],
+                    'title': TASK_STATUS[key] || key,
+                    'label': '0',
+                    'cards': [],
+                });
+            }
+        }
         const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
         webService.doQuery(query)
             .then(async function (result) {
                 setProjectTasks(result);
-                for (const key in TASK_STATUS) {
-                    if (TASK_STATUS.hasOwnProperty(key)) {
-                        lanesData.push({
-                            'id': TASK_STATUS[key],
-                            'title': TASK_STATUS[key] || key,
-                            'label': '0',
-                            'cards': [],
-                        });
-                    }
-                }
+                
 
-                await result.map(task => {
+                result.map(task => {
                     lanesData.map(lane => {
                         if (task.projecttaskstatus === lane.id) {
                             lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;

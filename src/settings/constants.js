@@ -10,10 +10,10 @@ export const ACCESS_KEY_NAME = 'access_key';
 
 // **************** TASK STATUS START **************************
 export const TASK_STATUS = {
-    other:    '',
-    backlog:  'Backlog',
-    toDo:     'To Do',
-    doing:    'Doing',
-    done:     'Done',
+    open:        'Open',
+    inprogress:  'In progress',
+    deferred:    'Deferred',
+    Cancelled:   'Cancelled',
+    Completed:   'Completed',
 };
 // **************** TASK STATUS END **************************
