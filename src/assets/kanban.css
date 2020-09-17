@@ -64,9 +64,13 @@ html, body{
 }
 
 .modal-header {
-    display: inline-block !important;
+   /*  display: inline-block !important; */
     border-bottom-color: #EEEEEE;
     background-color: #ffffff !important;
+}
+
+.badge{
+    font-size: 100%;
 }
 
 .modal-header h4{
@@ -131,4 +135,8 @@ html, body{
 
 .custom-task-lane-form .col{
     padding: 10px 0 !important;
+}
+
+.fillRemainingSpace{
+    flex: 1 1 auto;
 }

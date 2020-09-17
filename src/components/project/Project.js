@@ -5,6 +5,8 @@ import {webService} from "../../utils/api/webservice";
 import ProjectTasks from './ProjectTasks';
 import { useLocation} from "react-router";
 import queryString from 'query-string';
+//import { SetRandomValue } from '../../utils/lib/WSClientHelper';
+//import { TASK_STATUS } from '../../settings/constants';
 
 
 const Project = (props) => {
@@ -16,6 +18,8 @@ const Project = (props) => {
 
     useEffect(() => {
         fetchProject();
+        //const taskStatusList = Object.values(TASK_STATUS);
+        //SetRandomValue('ProjectTask', 'projecttaskstatus' ,taskStatusList);
     }, []); 
 
     const fetchProject = () => {

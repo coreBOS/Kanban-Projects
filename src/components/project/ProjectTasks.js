@@ -30,6 +30,7 @@ const ProjectTasks = (props) => {
     const [clickedProjectTaskMetadata, setClickedProjectTaskMetadata] = useState('');
     const [clickedProjectTaskLaneId, setClickedProjectTaskLaneId] = useState('');
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const lanesData = [];
     const components = {
         Card: ProjectTaskCard,
@@ -39,14 +40,14 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         fetchProjectTask(props?.projectId);
-
-        /* webService.doDescribe('ProjectTask')
+        const module = 'ModComments';
+        /* webService.doDescribe(`${module}`)
             .then(async function (result) {
-                console.log("ProjectTask", result)
+                console.log(`${module}`, result)
             })
-            .catch(function (error) {
+            .catch(function (error) {   
                 console.log("Error: ", error)
-            }) */
+            })  */
     }, []);
 
     const fetchProjectTask = (projectId) => {
@@ -61,6 +62,7 @@ const ProjectTasks = (props) => {
             }
         }
         const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
+        setIsLoading(true);
         webService.doQuery(query)
             .then(async function (result) {
                 setProjectTasks(result);
@@ -88,7 +90,22 @@ const ProjectTasks = (props) => {
             .catch(function (error) {
                 console.log("Error: ", error)
             })
+            .finally(() => {
+                setIsLoading(false);
+            })
     };
+
+    const Loader = () => {
+        return (
+            <div className="bg-transparent text-white" style={{position: 'fixed', top: '50%', left: '50%', zIndex: '1000'}}>
+                <div className="text-center">
+                    <div className="spinner-border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     const shouldReceiveNewData = nextData => {
         console.log('New card has been added');
@@ -114,6 +131,9 @@ const ProjectTasks = (props) => {
 
     return (
         <div className={'kanban-container'}>
+            { isLoading &&
+                <Loader />
+            }
             <Board
                 draggable
                 editable

@@ -26,7 +26,9 @@ export const SetRandomValue = (module, updateField, pickList = []) => {
     let executionTimes = [];
 
     const query1ExecutionStart = new Date().getTime();
-    webService.doQuery(`SELECT * FROM ${module}`).then((result) => {
+    const query = `SELECT * FROM ${module} where projecttaskstatus = null`;
+    console.log('query', query);
+    webService.doQuery(query).then((result) => {
         query1ExecutionTime = query1ExecutionStart - new Date().getTime();
         recordsCount = result.length;
         const query2ExecutionStart = new Date().getTime();
