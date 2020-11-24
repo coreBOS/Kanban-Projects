@@ -1,5 +1,5 @@
 import React from 'react';
-import { ACCESS_KEY_NAME }  from '../settings/constants';
+//import { ACCESS_KEY_NAME }  from '../settings/constants';
 import { webService } from '../utils/api/webservice';
 
 

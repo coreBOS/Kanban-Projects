@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Link } from "react";
+import React, { useState, useEffect } from "react";
 import { webService } from "../../utils/api/webservice";
-import { TASK_STATUS } from '../../settings/constants';
+//import { TASK_STATUS } from '../../settings/constants';
 import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
@@ -23,8 +23,9 @@ const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
 
 const ProjectTasks = (props) => {
 
-    const [projectTasks, setProjectTasks] = useState([]);
+    //const [projectTasks, setProjectTasks] = useState([]);
     const [boardData, setBoardData] = useState({ lanes: [] });
+    /* eslint-disable no-unused-vars */
     const [eventBus, setEventBus] = useState([]);
     const [clickedProjectTaskId, setClickedProjectTaskId] = useState('');
     const [clickedProjectTaskMetadata, setClickedProjectTaskMetadata] = useState('');
@@ -39,19 +40,20 @@ const ProjectTasks = (props) => {
     };
 
     useEffect(() => {
+        /* eslint-disable react-hooks/exhaustive-deps */
         fetchProjectTask(props?.projectId);
-        const module = 'ModComments';
-        /* webService.doDescribe(`${module}`)
+       /*  const module = 'ModComments';
+        webService.doDescribe(`${module}`)
             .then(async function (result) {
                 console.log(`${module}`, result)
-            })
-            .catch(function (error) {   
-                console.log("Error: ", error)
-            })  */
+        })
+        .catch(function (error) {   
+            console.log("Error: ", error)
+        })  */ 
     }, []);
 
     const fetchProjectTask = (projectId) => {
-        for (const key in TASK_STATUS) {
+        /* for (const key in TASK_STATUS) {
             if (TASK_STATUS.hasOwnProperty(key)) {
                 lanesData.push({
                     'id': TASK_STATUS[key],
@@ -60,16 +62,15 @@ const ProjectTasks = (props) => {
                     'cards': [],
                 });
             }
-        }
+        } */
         const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
         setIsLoading(true);
         webService.doQuery(query)
             .then(async function (result) {
-                setProjectTasks(result);
+                //setProjectTasks(result);
                 
-
-                result.map(task => {
-                    lanesData.map(lane => {
+                result.forEach(task => {
+                    lanesData.forEach(lane => {
                         if (task.projecttaskstatus === lane.id) {
                             lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
                             lane.cards.push({
@@ -85,7 +86,7 @@ const ProjectTasks = (props) => {
                         }
                     });
                 });
-                setBoardData({ ...boardData, ['lanes']: lanesData });
+                setBoardData({ ...boardData, lanes: lanesData });
             })
             .catch(function (error) {
                 console.log("Error: ", error)

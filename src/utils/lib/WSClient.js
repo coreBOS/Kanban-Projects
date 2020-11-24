@@ -1,6 +1,6 @@
 export const cbWSClient = function (url) {
     this._servicebase = 'webservice.php';
-    if (url != '' && url.substr(url.length - 1) != '/') {
+    if (url !== '' && url.substr(url.length - 1) !== '/') {
         // Format the url before appending servicebase
         url = url + '/';
     }
@@ -48,7 +48,7 @@ export const cbWSClient = function (url) {
      * Check if result has any error.
      */
     this.hasError = function (resultdata) {
-        if (resultdata != null && resultdata['success'] == false) {
+        if (resultdata !== null && resultdata['success'] === false) {
             this._lasterror = resultdata['error'].code + ': ' + resultdata['error'].message;
             return true;
         }
@@ -104,7 +104,7 @@ export const cbWSClient = function (url) {
         // reqtype = 'POST';
         this._serviceuser = username;
         this._servicekey = accesskey;
-        if (withpassword == undefined) {
+        if (withpassword === undefined) {
             withpassword = false;
         }
         let myself = this;
@@ -112,7 +112,7 @@ export const cbWSClient = function (url) {
         return new Promise((resolve, reject) => {
             this.__doChallenge(username)
                 .then(function (data) {
-                    if (myself.hasError(data) == false) {
+                    if (myself.hasError(data) === false) {
                         let result = data['result'];
                         myself._servicetoken = result.token;
                         myself._servertime = result.serverTime;
@@ -126,7 +126,7 @@ export const cbWSClient = function (url) {
                             .then(myself.status)
                             .then(myself.getData)
                             .then(logindata => {
-                                if (myself.hasError(logindata) == false) {
+                                if (myself.hasError(logindata) === false) {
                                     var result = logindata['result'];
                                     myself._sessionid = result.sessionName;
                                     myself._userid = result.userId;
@@ -159,7 +159,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     myself._servicetoken = false;
                     myself._servertime = false;
                     myself._expiretime = false;
@@ -186,7 +186,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     myself._sessionid = data['result'].sessionName;
                     myself._userid = data['result'].userId;
                     delete myself.fetchOptions.credentials;
@@ -206,7 +206,7 @@ export const cbWSClient = function (url) {
     this.doQuery = function (query) {
         this.__checkLogin();
 
-        if (query.indexOf(';') == -1) {
+        if (query.indexOf(';') === -1) {
             query += ';';
         }
 
@@ -219,7 +219,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -235,7 +235,7 @@ export const cbWSClient = function (url) {
      */
     this.getResultColumns = function (result) {
         let columns = [];
-        if (result != null && result.length != 0) {
+        if (result !== null && result.length !== 0) {
             let firstrecord = result[0];
             for (let key in firstrecord) {
                 columns.push(key);
@@ -259,7 +259,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     let result = data['result'];
                     let modulenames = result['types'];
                     let returnvalue = {};
@@ -294,7 +294,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -320,7 +320,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -351,7 +351,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -382,7 +382,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -408,7 +408,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -434,7 +434,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -465,7 +465,7 @@ export const cbWSClient = function (url) {
             postdata += '&' + key + '=' + params[key];
         }
         let getparams = '';
-        if (reqtype.toLowerCase() == 'post') {
+        if (reqtype.toLowerCase() === 'post') {
             this.fetchOptions.body = postdata;
         } else {
             delete this.fetchOptions.body;
@@ -477,7 +477,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -505,7 +505,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -534,7 +534,7 @@ export const cbWSClient = function (url) {
             .then(this.status)
             .then(this.getData)
             .then(function (data) {
-                if (myself.hasError(data) == false) {
+                if (myself.hasError(data) === false) {
                     return Promise.resolve(data['result']);
                 } else {
                     return Promise.reject(new Error('incorrect response: ' + myself.lastError()));
@@ -664,7 +664,7 @@ export const cbMD5 = function (s) {
         return d
     }
 
-    var C = Array();
+    var C = [];
     var P, h, E, v, g, Y, X, W, V;
     var S = 7, Q = 12, N = 17, M = 22;
     var A = 5, z = 9, y = 14, w = 20;

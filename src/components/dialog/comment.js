@@ -7,7 +7,6 @@ import { Button, CustomInput, FormGroup, Input, Label } from "reactstrap";
 import { TASK_STATUS } from '../../settings/constants';
 
 const CommentDialog = (props) => {
-    console.log("Opening Dialog:", props);
     const [projectTask, setProjectTask] = useState({});
     const [comments, setComments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +32,7 @@ const CommentDialog = (props) => {
 
     useEffect(() => {
         fetchData();
+        /* eslint-disable react-hooks/exhaustive-deps */
     }, []);
 
     const fetchData = () => {
@@ -65,6 +65,8 @@ const CommentDialog = (props) => {
                 return "badge badge-danger";
             case 'low':
                 return "badge badge-primary";
+            default:
+                return "badge badge-dark";
         }
     };
 
@@ -80,9 +82,9 @@ const CommentDialog = (props) => {
         )
     }
 
-    const loadMoreComments = () => {
+   /*  const loadMoreComments = () => {
         //alert("Loading More Comments....")
-    };
+    }; */
 
     return (
         <React.Fragment>
@@ -178,9 +180,9 @@ const CommentDialog = (props) => {
     )
 };
 
-const mapStateToProps = (state) => ({});
+//const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = (dispatch) => ({});
+//const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(
     null,

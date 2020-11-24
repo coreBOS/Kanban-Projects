@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Link } from "react";
+import React, {useState, useEffect } from "react";
 //import Board from "react-trello";
 //import debug from "../../utils/debug";
 import {webService} from "../../utils/api/webservice";
@@ -15,13 +15,6 @@ const Project = (props) => {
     const location = useLocation();
     const { pid } = queryString.parse(location.search) ?? '';
     
-
-    useEffect(() => {
-        fetchProject();
-        //const taskStatusList = Object.values(TASK_STATUS);
-        //SetRandomValue('ProjectTask', 'projecttaskstatus' ,taskStatusList);
-    }, []); 
-
     const fetchProject = () => {
         const query = `SELECT * from project WHERE id = ${pid} LIMIT 1`;
         webService.doQuery(query)
@@ -32,6 +25,13 @@ const Project = (props) => {
                 console.log("Error: ", error)
             })
     };
+
+    useEffect(() => {
+        fetchProject();
+        //const taskStatusList = Object.values(TASK_STATUS);
+        //SetRandomValue('ProjectTask', 'projecttaskstatus' ,taskStatusList);
+        /* eslint-disable react-hooks/exhaustive-deps */
+    }, []); 
 
     return (    
         <>

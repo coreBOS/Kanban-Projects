@@ -1,10 +1,10 @@
-import React, {useState, useEffect, Link } from "react";
+import React, {useState, useEffect } from "react";
 //import Board from "react-trello";
 //import debug from "../../utils/debug";
 import {webService} from "../../utils/api/webservice";
 import 'tui-grid/dist/tui-grid.css';
 import Grid from '@toast-ui/react-grid';
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+//import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 import {
     PROJECT,
@@ -14,7 +14,9 @@ import {
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [offset, setOffset] = useState(0);
+    /* eslint-disable no-unused-vars */
     const [page, setPage] = useState(1);
+    /* eslint-disable no-unused-vars */
     const [perPage, setPerPage] = useState(20);
     const [isLoading, setIsLoading] = useState(false);
     const searchQuery = `SELECT * from project ORDER BY id DESC LIMIT ${offset}, ${perPage}`;
@@ -38,7 +40,7 @@ const Projects = () => {
 
     useEffect(() => {
         fetchProjects(searchQuery);
-    }, []);
+    }, [searchQuery]);
     
     const fetchProjects = (query) => {
         setIsLoading(true);

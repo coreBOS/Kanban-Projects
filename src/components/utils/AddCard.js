@@ -13,7 +13,7 @@ class AddTaskCardForm extends Component {
             taskDescription: this.taskDescriptionRef.value
         });
         const setTitleRef = (ref) => this.taskNameRef = ref;
-        const setTaskNameRef = (ref) => this.taskNameRef = ref;
+        //const setTaskNameRef = (ref) => this.taskNameRef = ref;
         const setAssignedToRef = (ref) => this.assignedToRef = ref;
         const setTaskPriorityRef = (ref) => this.taskPriorityRef = ref;
         const setTaskDescriptionRef = (ref) => this.taskDescriptionRef = ref;

@@ -1,11 +1,11 @@
 import React from "react";
-import {connect} from "react-redux";
+//import {connect} from "react-redux";
 import {MovableCardWrapper } from 'react-trello/src/styles/Base'
 const ProjectTaskCard = (props) => {
 
-    const getTaskLabel = (data, type) => {
+    /* const getTaskLabel = (data, type) => {
 
-    };
+    }; */
 
     const taskPriorityLabel = (priority) => {
         switch (priority) {
@@ -20,6 +20,10 @@ const ProjectTaskCard = (props) => {
             case 'low':
                 return (
                     <span className={'badge badge-primary'}>{priority}</span>
+                )
+            default: 
+                return (
+                    <span className={'badge badge-dark'}>{priority}</span>
                 )
         }
     };

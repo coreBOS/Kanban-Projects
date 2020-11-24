@@ -4,7 +4,7 @@ import {Button, Col, Form, FormGroup, Input, Row} from "reactstrap";
 class AddTaskLaneForm extends Component {
 
     render () {
-        const {onCancel, t} = this.props;
+        const {onCancel} = this.props;
         const handleAdd = () => this.props.onAdd({title: this.inputRef.value});
         const setInputRef = (ref) => this.inputRef = ref;
         return (
