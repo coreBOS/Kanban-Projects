@@ -2,36 +2,43 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { webService } from "../../utils/api/webservice";
 //import { sampleComments } from "./data";
-import ReactQuill from "react-quill";
-import { Button, CustomInput, FormGroup, Input, Label } from "reactstrap";
-import { TASK_STATUS } from '../../settings/constants';
+//import ReactQuill from "react-quill";
+//import { Button, CustomInput, FormGroup, Input, Label } from "reactstrap";
+//import { TASK_STATUS } from '../../settings/constants';
+import { input } from "../../utils/input";
+import { useForm, Controller } from "react-hook-form";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+        width: '100%'
+      },
+    },
+}));
 
 const CommentDialog = (props) => {
     const [projectTask, setProjectTask] = useState({});
     const [comments, setComments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const taskStatusList = Object.values(TASK_STATUS);
-    const modules = {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' },
-            { 'indent': '-1' }, { 'indent': '+1' }],
-            ['link', 'image'],
-            ['clean']
-        ],
-        clipboard: {
-            matchVisual: false,
-        }
-    };
-    const formats = [
-        'font', 'size',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent',
-        'link', 'image'
-    ];
+    //const taskStatusList = Object.values(TASK_STATUS);
+
+    const [fields, setFields] = useState([]);
+    const classes = useStyles();
+    const formMethods = useForm();
+    const { handleSubmit, control, errors } = formMethods;
 
     useEffect(() => {
         fetchData();
+        webService.doDescribe(`ModComments`)
+            .then(async function (result) {
+                //console.log(`ModComments`, result);
+                setFields(result?.fields??[]);
+        })
+        .catch(function (error) {   
+            console.log("Error: ", error)
+        })  
         /* eslint-disable react-hooks/exhaustive-deps */
     }, []);
 
@@ -42,7 +49,7 @@ const CommentDialog = (props) => {
             setProjectTask(task[0]);
             webService.doQuery(`SELECT * FROM ModComments WHERE related.projecttask=${props.projectTaskId} ORDER BY createdtime DESC`)
             .then((comments) => {
-                console.log(comments    );
+                //console.log(comments);
                 setComments(comments);
             })
             .catch(function (taskError) {
@@ -81,6 +88,8 @@ const CommentDialog = (props) => {
             </div>
         )
     }
+
+    const onSubmit = data => console.log(data);
 
    /*  const loadMoreComments = () => {
         //alert("Loading More Comments....")
@@ -138,6 +147,24 @@ const CommentDialog = (props) => {
                                 </div> */}
                                 <div className="row mt-3">
                                     <div className="col-lg-12">
+                                        {fields.length > 0 &&
+                                            <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
+                        
+                                                {React.Children.toArray(
+                                                    fields.map((field) => {
+                                                        return (
+                                                            input(field, Controller, control, errors)
+                                                        );
+                                                    })
+                                                )}
+                                
+                                                <input type="submit" value="Comment" />
+                                            </form>
+                                        }
+                                    </div>
+                                    
+
+                                   {/*  <div className="col-lg-12">
                                         <div className={'form-group'}>
                                             <label htmlFor={'status'}>Status</label>
                                             <Input type="select" name="status" value={projectTask.projecttaskstatus} id="status" bsSize="sm">
@@ -146,29 +173,14 @@ const CommentDialog = (props) => {
                                                 })}
                                             </Input>
                                         </div>
-                                    </div>
-                                    <div className="col-lg-12">
+                                    </div> */}
+                                   {/*  <div className="col-lg-12">
                                         <FormGroup>
                                             <Label for="attachment">Attachment</Label>
                                             <CustomInput type="file" id="attachment" name="customFile" label="Add an attachment" />
                                         </FormGroup>
-                                    </div>
-                                    <div className="col-lg-12">
-                                        <div className={'form-group'}>
-                                            <ReactQuill
-                                                theme="snow"
-                                                modules={modules}
-                                                formats={formats}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-12">
-                                        <div className="form-group">
-                                            <Button color="primary" size="sm">
-                                                Comment
-                                            </Button>
-                                        </div>
-                                    </div>
+                                    </div> */}
+
                                 </div>
                             </div>
                         </div>

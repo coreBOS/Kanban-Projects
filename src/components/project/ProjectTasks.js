@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { webService } from "../../utils/api/webservice";
-//import { TASK_STATUS } from '../../settings/constants';
+import { TASK_STATUS } from '../../settings/constants';
 import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
 import AddTaskCardForm from "../utils/AddCard";
 import AddTaskLaneForm from "../utils/AddLane";
+
 
 const handleDragStart = (cardId, laneId) => {
     console.log('drag started');
@@ -42,18 +43,20 @@ const ProjectTasks = (props) => {
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
         fetchProjectTask(props?.projectId);
-       /*  const module = 'ModComments';
+
+        /* const module = 'ModComments';
         webService.doDescribe(`${module}`)
             .then(async function (result) {
-                console.log(`${module}`, result)
+                console.log(`${module}`, result);
+                setFields(result?.fields??[]);
         })
         .catch(function (error) {   
             console.log("Error: ", error)
-        })  */ 
+        })   */
     }, []);
 
     const fetchProjectTask = (projectId) => {
-        /* for (const key in TASK_STATUS) {
+        for (const key in TASK_STATUS) {
             if (TASK_STATUS.hasOwnProperty(key)) {
                 lanesData.push({
                     'id': TASK_STATUS[key],
@@ -62,13 +65,11 @@ const ProjectTasks = (props) => {
                     'cards': [],
                 });
             }
-        } */
+        } 
         const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
         setIsLoading(true);
         webService.doQuery(query)
             .then(async function (result) {
-                //setProjectTasks(result);
-                
                 result.forEach(task => {
                     lanesData.forEach(lane => {
                         if (task.projecttaskstatus === lane.id) {
@@ -86,6 +87,7 @@ const ProjectTasks = (props) => {
                         }
                     });
                 });
+
                 setBoardData({ ...boardData, lanes: lanesData });
             })
             .catch(function (error) {
@@ -130,8 +132,11 @@ const ProjectTasks = (props) => {
         setOpenCommentDialog(false)
     };
 
+    const onSubmit = data => console.log(data);
+
     return (
         <div className={'kanban-container'}>
+
             { isLoading &&
                 <Loader />
             }
@@ -153,6 +158,7 @@ const ProjectTasks = (props) => {
                 tagStyle={{ fontSize: '80%' }}
             />
             {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} /> : null}
+           
         </div>
     )
 
