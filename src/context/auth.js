@@ -14,6 +14,12 @@ const isValidToken = () => {
   //const accessKey = localStorage.getItem(ACCESS_KEY_NAME); 
   // TODO: Check token validity & expiration using webService
   if (webService._serviceuser && webService._servicekey) return true;
+  const currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : null;
+  if(currentUser && currentUser.userId){
+    webService._sessionid = currentUser?.sessionName;
+    webService._userid = currentUser?._userid;
+    return true;
+  }
   return false;
 };
 
@@ -22,8 +28,10 @@ const AuthProvider = (props) => {
   const authenticate = async ({username, accessKey}) => { 
     const result = await webService.doLogin(username, accessKey, false);
     if(result){
-        //localStorage.setItem(ACCESS_KEY_NAME, accessKey);
-        makeAuthenticated(true);
+      console.log(result);
+      //localStorage.setItem(ACCESS_KEY_NAME, accessKey);
+      localStorage.setItem('currentUser', JSON.stringify(result.result));
+      makeAuthenticated(true);
     }else {
         makeAuthenticated(false); 
         console.log("Something went wrong..", result);
