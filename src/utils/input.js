@@ -34,6 +34,7 @@ export const input = (field, Controller, control, errors) => {
                         name={field.name} 
                         control={control} 
                         defaultValue={field.default}
+                        rules={{ required: field.mandatory }}
                         render={({ onChange, value }) => <TextField id={field.name} label={field.label} variant="outlined" onChange={onChange} value={value} /> }
                     />
                     {errors[field.name] && <span>This field is required</span>}
@@ -57,6 +58,7 @@ export const input = (field, Controller, control, errors) => {
                         name={field.name}
                         control={control}
                         defaultValue=""
+                        rules={{ required: field.mandatory }}
                         options={
                             userlist.map(user => {
                                 return { value: user.userid, label: user.username }
@@ -74,6 +76,7 @@ export const input = (field, Controller, control, errors) => {
                         name={field.name} 
                         control={control} 
                         defaultValue={field.default}
+                        rules={{ required: field.mandatory }}
                         render={({ onChange, value }) => <TextField id={field.name} label={field.label} variant="outlined" onChange={onChange} value={value} /> }
                     />
                     {errors[field.name] && <span>This field is required</span>}
