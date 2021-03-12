@@ -70,6 +70,7 @@ const ProjectTasks = (props) => {
         setIsLoading(true);
         webService.doQuery(query)
             .then(async function (result) {
+                //console.log(result);
                 result.forEach(task => {
                     lanesData.forEach(lane => {
                         if (task.projecttaskstatus === lane.id) {

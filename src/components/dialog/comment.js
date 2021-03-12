@@ -30,38 +30,38 @@ const CommentDialog = (props) => {
     const { handleSubmit, control, errors } = formMethods;
 
     useEffect(() => {
-        fetchData();
-        webService.doDescribe(`ModComments`)
-            .then(async function (result) {
-                //console.log(`ModComments`, result);
-                setFields(result?.fields??[]);
+        /* webService.doListTypes()
+            .then((result) => {
+                console.log(`modules`, result);
         })
         .catch(function (error) {   
             console.log("Error: ", error)
-        })  
+        })    */
         /* eslint-disable react-hooks/exhaustive-deps */
+        loadProjectTask(props.projectTaskId);
+        loadProjectTaskComments(props.projectTaskId);
+        loadModuleFields('ModComments');
     }, []);
 
-    const fetchData = () => {
+    const loadModuleFields = async (moduleName) => {
         setIsLoading(true);
-        webService.doQuery(`SELECT * FROM ProjectTask WHERE id=${props.projectTaskId} LIMIT 1`)
-        .then((task) => {
-            setProjectTask(task[0]);
-            webService.doQuery(`SELECT * FROM ModComments WHERE related.projecttask=${props.projectTaskId} ORDER BY createdtime DESC`)
-            .then((comments) => {
-                //console.log(comments);
-                setComments(comments);
-            })
-            .catch(function (taskError) {
-                console.log("Error: ", taskError)
-            })
-        })
-        .catch(function (taskError) {
-            console.log("Error: ", taskError);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        })
+        const modFields = await webService.doDescribe(moduleName);
+        setFields(modFields?.fields??[]);
+        setIsLoading(false);
+    };
+
+    const loadProjectTask = async (projectTaskId) => {
+        setIsLoading(true);
+        const projTask = await webService.doQuery(`SELECT * FROM ProjectTask WHERE id=${projectTaskId} LIMIT 1`);
+        setProjectTask(projTask[0]??{});
+        setIsLoading(false);
+    };
+
+    const loadProjectTaskComments = async (projectTaskId) => {
+        setIsLoading(true);
+        const comments = await webService.doQuery(`SELECT * FROM ModComments WHERE related.projecttask=${projectTaskId} ORDER BY createdtime DESC`);
+        setComments(comments);
+        setIsLoading(false);
     };
 
     const taskPriorityLabel = (priority) => {
@@ -89,7 +89,23 @@ const CommentDialog = (props) => {
         )
     }
 
-    const onSubmit = data => console.log(data);
+    const onSubmit = data => {
+        data.assigned_user_id = projectTask?.assigned_user_id;
+        data.related_to = projectTask?.id;
+        console.log(data);
+        setIsLoading(true);
+        webService.doCreate('ModComments', data)
+        .then((result) => {
+            console.log(result);
+           loadProjectTaskComments(props.projectTaskId);
+        })
+        .catch(function (taskError) {
+            console.log("Error: ", taskError);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
+    };
 
    /*  const loadMoreComments = () => {
         //alert("Loading More Comments....")
@@ -102,6 +118,9 @@ const CommentDialog = (props) => {
                 <Loader />
             }
                 <div className="modal-dialog" role="document">
+                    { isLoading &&
+                        <Loader />
+                    }
                     <div className="modal-content">
                         <div className="modal-header d-flex">
                             <h5 className="modal-title" id={props.projectTaskId}>{projectTask.projecttaskname}</h5>
@@ -152,9 +171,13 @@ const CommentDialog = (props) => {
                         
                                                 {React.Children.toArray(
                                                     fields.map((field) => {
-                                                        return (
-                                                            input(field, Controller, control, errors)
-                                                        );
+                                                        if(field.name === 'commentcontent'){
+                                                            return (
+                                                                input(field, Controller, control, errors)
+                                                            );
+                                                        }else {
+                                                            return null;
+                                                        }
                                                     })
                                                 )}
                                 
