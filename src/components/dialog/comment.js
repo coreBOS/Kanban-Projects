@@ -8,6 +8,7 @@ import { webService } from "../../utils/api/webservice";
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,7 +40,7 @@ const CommentDialog = (props) => {
         })    */
         /* eslint-disable react-hooks/exhaustive-deps */
         loadProjectTask(props.projectTaskId);
-        loadProjectTaskComments(props.projectTaskId);
+        loadComments(props.projectTaskId);
         loadModuleFields('ModComments');
     }, []);
 
@@ -57,7 +58,7 @@ const CommentDialog = (props) => {
         setIsLoading(false);
     };
 
-    const loadProjectTaskComments = async (projectTaskId) => {
+    const loadComments = async (projectTaskId) => {
         setIsLoading(true);
         const comments = await webService.doQuery(`SELECT * FROM ModComments WHERE related.projecttask=${projectTaskId} ORDER BY createdtime DESC`);
         setComments(comments);
@@ -92,12 +93,11 @@ const CommentDialog = (props) => {
     const onSubmit = data => {
         data.assigned_user_id = projectTask?.assigned_user_id;
         data.related_to = projectTask?.id;
-        console.log(data);
         setIsLoading(true);
         webService.doCreate('ModComments', data)
         .then((result) => {
             console.log(result);
-           loadProjectTaskComments(props.projectTaskId);
+            loadComments(props.projectTaskId);
         })
         .catch(function (taskError) {
             console.log("Error: ", taskError);
@@ -180,8 +180,8 @@ const CommentDialog = (props) => {
                                                         }
                                                     })
                                                 )}
-                                
-                                                <input type="submit" value="Comment" />
+
+                                                <Button type="submit" variant="contained" color="primary">Comment</Button>
                                             </form>
                                         }
                                     </div>
