@@ -9,6 +9,7 @@ import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { MOD_COMMENT }  from '../../settings/constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,7 +42,7 @@ const CommentDialog = (props) => {
         /* eslint-disable react-hooks/exhaustive-deps */
         loadProjectTask(props.projectTaskId);
         loadComments(props.projectTaskId);
-        loadModuleFields('ModComments');
+        loadModuleFields(MOD_COMMENT);
     }, []);
 
     const loadModuleFields = async (moduleName) => {

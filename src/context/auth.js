@@ -28,7 +28,6 @@ const AuthProvider = (props) => {
   const authenticate = async ({username, accessKey}) => { 
     const result = await webService.doLogin(username, accessKey, false);
     if(result){
-      console.log(result);
       //localStorage.setItem(ACCESS_KEY_NAME, accessKey);
       localStorage.setItem('currentUser', JSON.stringify(result.result));
       makeAuthenticated(true);

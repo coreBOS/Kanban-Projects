@@ -17,3 +17,9 @@ export const TASK_STATUS = {
     Completed:   'Completed',
 };
 // **************** TASK STATUS END **************************
+
+// **************** MODULES **************************
+// General Page Section
+export const MOD_COMMENT = 'ModComments';
+
+// **************** MODULES END **************************

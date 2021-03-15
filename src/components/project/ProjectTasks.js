@@ -133,8 +133,6 @@ const ProjectTasks = (props) => {
         setOpenCommentDialog(false)
     };
 
-    const onSubmit = data => console.log(data);
-
     return (
         <div className={'kanban-container'}>
 
