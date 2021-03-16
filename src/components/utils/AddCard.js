@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from "react";
+import { useLocation } from 'react-router-dom';
+import { webService } from "../../utils/api/webservice";
 import {Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter} from "reactstrap";
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
@@ -16,13 +18,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddTaskCardForm = (props) => {
-    console.log('props', props);
     //const {onCancel} = props;
     const classes = useStyles();
     const formMethods = useForm();
     const { handleSubmit, control, errors, reset } = formMethods;
     const [fields, setFields] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const url = new URLSearchParams(useLocation().search);
+    const projectid =  url.get('pid')??'';
     
 
     const {
@@ -36,15 +39,26 @@ const AddTaskCardForm = (props) => {
         /* eslint-disable react-hooks/exhaustive-deps */
         setIsLoading(true);
         loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
-            console.log(MOD_PROJECT_TASK, modFields);
+            //console.log(MOD_PROJECT_TASK, modFields);
             setFields(modFields?.fields??[]);
             setIsLoading(false);
         });
     }, []);
 
     const handleAdd = (data) => {
-        console.log(data);
-        reset();
+        data.projectid = projectid??'';
+        setIsLoading(true);
+        webService.doCreate(MOD_PROJECT_TASK, data)
+        .then((result) => {
+            console.log(result);
+            reset();
+        })
+        .catch(function (taskError) {
+            console.log("Error: ", taskError);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
     };
 
     const Loader = () => {
@@ -72,9 +86,12 @@ const AddTaskCardForm = (props) => {
         
                             {React.Children.toArray(
                                 fields?.map((field) => {
-                                    return (
-                                        input(field, Controller, control, errors)
-                                    );
+                                    if(field.name !== 'projectid'){
+                                        return (
+                                            input(field, Controller, control, errors)
+                                        );
+                                    }
+                                    return null;
                                 })
                             )}
                             <FormGroup className="w-50 mx-auto">

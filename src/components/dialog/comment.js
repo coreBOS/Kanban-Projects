@@ -50,7 +50,7 @@ const CommentDialog = (props) => {
 
     const loadComments = async (projectTaskId) => {
         setIsLoading(true);
-        const comments = await webService.doQuery(`SELECT * FROM ModComments WHERE related.projecttask=${projectTaskId} ORDER BY createdtime DESC`);
+        const comments = await webService.doQuery(`SELECT * FROM ${MOD_COMMENT} WHERE related.projecttask=${projectTaskId} ORDER BY createdtime DESC`);
         setComments(comments);
         setIsLoading(false);
     };
@@ -84,10 +84,10 @@ const CommentDialog = (props) => {
         data.assigned_user_id = projectTask?.assigned_user_id;
         data.related_to = projectTask?.id;
         setIsLoading(true);
-        webService.doCreate('ModComments', data)
-        .then((result) => {
-            reset();
+        webService.doCreate(MOD_COMMENT, data)
+        .then(() => {
             loadComments(props.projectTaskId);
+            reset();
         })
         .catch(function (taskError) {
             console.log("Error: ", taskError);
