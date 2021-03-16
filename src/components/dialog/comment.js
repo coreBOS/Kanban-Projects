@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { webService } from "../../utils/api/webservice";
+import { loadModuleFields } from "../../utils/lib/WSClientHelper";
 //import { sampleComments } from "./data";
 //import ReactQuill from "react-quill";
 //import { Button, CustomInput, FormGroup, Input, Label } from "reactstrap";
@@ -32,25 +33,13 @@ const CommentDialog = (props) => {
     const { handleSubmit, control, errors } = formMethods;
 
     useEffect(() => {
-        /* webService.doListTypes()
-            .then((result) => {
-                console.log(`modules`, result);
-        })
-        .catch(function (error) {   
-            console.log("Error: ", error)
-        })    */
         /* eslint-disable react-hooks/exhaustive-deps */
         loadProjectTask(props.projectTaskId);
         loadComments(props.projectTaskId);
-        loadModuleFields(MOD_COMMENT);
+        loadModuleFields(MOD_COMMENT).then((modFields) => {
+            setFields(modFields?.fields??[]);
+        });
     }, []);
-
-    const loadModuleFields = async (moduleName) => {
-        setIsLoading(true);
-        const modFields = await webService.doDescribe(moduleName);
-        setFields(modFields?.fields??[]);
-        setIsLoading(false);
-    };
 
     const loadProjectTask = async (projectTaskId) => {
         setIsLoading(true);
@@ -114,7 +103,7 @@ const CommentDialog = (props) => {
 
     return (
         <React.Fragment>
-            <div className="modal right fade" tabIndex="-1" role="dialog" aria-labelledby={props.projectTaskId}>
+            <div className="commentModal modal right fade" tabIndex="-1" role="dialog" aria-labelledby={props.projectTaskId}>
             { isLoading &&
                 <Loader />
             }
@@ -186,24 +175,6 @@ const CommentDialog = (props) => {
                                             </form>
                                         }
                                     </div>
-                                    
-
-                                   {/*  <div className="col-lg-12">
-                                        <div className={'form-group'}>
-                                            <label htmlFor={'status'}>Status</label>
-                                            <Input type="select" name="status" value={projectTask.projecttaskstatus} id="status" bsSize="sm">
-                                                {taskStatusList.map((status, statusIndex) => {
-                                                    return <option value={status} key={statusIndex}>{status}</option>
-                                                })}
-                                            </Input>
-                                        </div>
-                                    </div> */}
-                                   {/*  <div className="col-lg-12">
-                                        <FormGroup>
-                                            <Label for="attachment">Attachment</Label>
-                                            <CustomInput type="file" id="attachment" name="customFile" label="Add an attachment" />
-                                        </FormGroup>
-                                    </div> */}
 
                                 </div>
                             </div>

@@ -1,8 +1,8 @@
 import React from "react";
 //import {connect} from "react-redux";
-import {MovableCardWrapper } from 'react-trello/src/styles/Base'
-const ProjectTaskCard = (props) => {
+import {MovableCardWrapper } from 'react-trello/src/styles/Base';
 
+const ProjectTaskCard = (props) => {
     /* const getTaskLabel = (data, type) => {
 
     }; */
@@ -61,5 +61,6 @@ const ProjectTaskCard = (props) => {
         </React.Fragment>
     )
 };
+
 
 export default ProjectTaskCard;

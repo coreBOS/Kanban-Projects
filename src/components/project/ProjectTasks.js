@@ -5,9 +5,11 @@ import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
-import AddTaskCardForm from "../utils/AddCard";
+//import AddTaskCardForm from "../utils/AddCard";
 import AddTaskLaneForm from "../utils/AddLane";
-
+import AddCardLink from '../utils/AddCardLink';
+/* import { loadModuleFields } from "../../utils/lib/WSClientHelper";
+import { MOD_PROJECT_TASK }  from '../../settings/constants'; */
 
 const handleDragStart = (cardId, laneId) => {
     console.log('drag started');
@@ -23,7 +25,6 @@ const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
 };
 
 const ProjectTasks = (props) => {
-
     //const [projectTasks, setProjectTasks] = useState([]);
     const [boardData, setBoardData] = useState({ lanes: [] });
     /* eslint-disable no-unused-vars */
@@ -34,25 +35,17 @@ const ProjectTasks = (props) => {
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const lanesData = [];
+    
     const components = {
         Card: ProjectTaskCard,
-        NewCardForm: AddTaskCardForm,
-        NewLaneForm: AddTaskLaneForm
+        //NewCardForm: AddTaskCardForm,
+        NewLaneForm: AddTaskLaneForm,
+        AddCardLink: AddCardLink
     };
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
         fetchProjectTask(props?.projectId);
-
-        /* const module = 'ModComments';
-        webService.doDescribe(`${module}`)
-            .then(async function (result) {
-                console.log(`${module}`, result);
-                setFields(result?.fields??[]);
-        })
-        .catch(function (error) {   
-            console.log("Error: ", error)
-        })   */
     }, []);
 
     const fetchProjectTask = (projectId) => {
@@ -83,7 +76,7 @@ const ProjectTasks = (props) => {
                                 'taskPriority': task.projecttaskpriority,
                                 'assignedTo': task,
                                 'startDate': task.startdate,
-                                'endDate': task.enddate
+                                'endDate': task.enddate,
                             });
                         }
                     });
@@ -116,10 +109,10 @@ const ProjectTasks = (props) => {
         console.log(nextData);
     };
 
-    const handleCardAdd = (card, laneId) => {
-        console.log(`New card added to lane ${laneId}`);
-        console.dir(card);
-
+    const handleCardAdd = (card) => {
+        console.log(card);
+        //console.log(`New card added to lane ${laneId}`);
+        //console.dir(card);
     };
 
     const handleOnCardClick = (projectTaskId, projectTaskMetadata, projectTaskLaneId) => {
@@ -144,7 +137,7 @@ const ProjectTasks = (props) => {
                 editable
                 canAddLanes
                 editLaneTitle
-                onCardAdd={() => handleCardAdd()}
+                onCardAdd={(card) => handleCardAdd(card)}
                 onCardClick={handleOnCardClick}
                 data={boardData}
                 onDataChange={shouldReceiveNewData}

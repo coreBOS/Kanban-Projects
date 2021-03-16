@@ -2,7 +2,7 @@ html, body{
     font-family: "Arial", SansSerif, serif;
     margin: 0 !important;
 }
-.modal{
+.commentModal.modal{
     float: right !important;
     width: 450px;
     height: 100vh;
@@ -22,12 +22,12 @@ html, body{
     transform: translate3d(0%, 0, 0);
 }
 
-.fade{
+.commentModal.fade{
     background: #fff;
     opacity: 1 !important;
 }
 
-.modal.right .modal-dialog {
+.commentModal.modal.right .modal-dialog {
     position: fixed;
     margin: auto;
     height: 100vh;
@@ -39,31 +39,31 @@ html, body{
     -o-transform: translate3d(0%, 0, 0);
     transform: translate3d(0%, 0, 0);
 }
-.modal.right .modal-content {
+.commentModal.modal.right .modal-content {
     height: 100%;
     overflow-y: auto;
 }
-.modal.right .modal-body {
+.commentModal.modal.right .modal-body {
     padding: 15px 15px 15px;
 }
 
-.modal.right.fade .modal-dialog {
+.commentModal.modal.right.fade .modal-dialog {
     -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
     -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
     -o-transition: opacity 0.3s linear, right 0.3s ease-out;
     transition: opacity 0.3s linear, right 0.3s ease-out;
 }
 
-.modal.right.fade.in .modal-dialog {
+.commentModal.modal.right.fade.in .modal-dialog {
     right: 0;
 }
 
-.modal-content {
+.commentModal .modal-content {
     border-radius: 0;
     border: none;
 }
 
-.modal-header {
+.commentModal .modal-header {
    /*  display: inline-block !important; */
     border-bottom-color: #EEEEEE;
     background-color: #ffffff !important;
@@ -73,16 +73,16 @@ html, body{
     font-size: 100%;
 }
 
-.modal-header h4{
+.commentModal .modal-header h4{
     font-size: 14px !important;
 }
 
-.modal-title{
+.commentModal .modal-title{
     display: inline !important;
     margin-left: 10px;
 }
 
-.modal-header button{
+.commentModal .modal-header button{
     outline: none !important;
 }
 

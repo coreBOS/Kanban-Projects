@@ -21,5 +21,5 @@ export const TASK_STATUS = {
 // **************** MODULES **************************
 // General Page Section
 export const MOD_COMMENT = 'ModComments';
-
+export const MOD_PROJECT_TASK = 'ProjectTask';
 // **************** MODULES END **************************

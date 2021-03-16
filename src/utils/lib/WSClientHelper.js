@@ -5,7 +5,7 @@ import { webService } from '../api/webservice';
 //module: 'ProjectTask'
 //const taskStatusList = Object.values(TASK_STATUS);
 
-export const SetRandomValue = (module, updateField, pickList = []) => {
+/* export const SetRandomValue = (module, updateField, pickList = []) => {
 
     let recordsCount = 0;
     let updatedCount = 0;
@@ -56,4 +56,9 @@ export const SetRandomValue = (module, updateField, pickList = []) => {
         console.log("Error: ", error)
     })
 
+} */
+
+export const loadModuleFields = async (module) => {
+    const modFields = await webService.doDescribe(module);
+    return modFields;
 }
