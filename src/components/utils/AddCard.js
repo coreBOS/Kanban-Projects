@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddTaskCardForm = (props) => {
-    console.log(props);
+    //console.log(props);
     //const {onCancel} = props;
     const classes = useStyles();
     const formMethods = useForm();
@@ -36,6 +36,7 @@ const AddTaskCardForm = (props) => {
         setIsLoading(true);
         webService.doCreate(MOD_PROJECT_TASK, data)
         .then(() => {
+            props.handleCardAdd();
             reset();
         })
         .catch(function (taskError) {

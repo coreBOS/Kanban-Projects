@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { webService } from "../../utils/api/webservice";
-import { loadModuleFields } from "../../utils/lib/WSClientHelper";
+//import { loadModuleFields } from "../../utils/lib/WSClientHelper";
 //import { sampleComments } from "./data";
 //import ReactQuill from "react-quill";
 //import { Button, CustomInput, FormGroup, Input, Label } from "reactstrap";
@@ -10,7 +10,7 @@ import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { MOD_COMMENT }  from '../../settings/constants';
+import { MOD_COMMENT, MOD_PROJECT_TASK }  from '../../settings/constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,9 +25,7 @@ const CommentDialog = (props) => {
     const [projectTask, setProjectTask] = useState({});
     const [comments, setComments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    //const taskStatusList = Object.values(TASK_STATUS);
 
-    const [fields, setFields] = useState([]);
     const classes = useStyles();
     const formMethods = useForm();
     const { handleSubmit, control, errors, reset } = formMethods;
@@ -36,14 +34,11 @@ const CommentDialog = (props) => {
         /* eslint-disable react-hooks/exhaustive-deps */
         loadProjectTask(props.projectTaskId);
         loadComments(props.projectTaskId);
-        loadModuleFields(MOD_COMMENT).then((modFields) => {
-            setFields(modFields?.fields??[]);
-        });
     }, []);
 
     const loadProjectTask = async (projectTaskId) => {
         setIsLoading(true);
-        const projTask = await webService.doQuery(`SELECT * FROM ProjectTask WHERE id=${projectTaskId} LIMIT 1`);
+        const projTask = await webService.doQuery(`SELECT * FROM ${MOD_PROJECT_TASK} WHERE id=${projectTaskId} LIMIT 1`);
         setProjectTask(projTask[0]??{});
         setIsLoading(false);
     };
@@ -149,18 +144,13 @@ const CommentDialog = (props) => {
                                         )
                                     })}
                                  </div>
-                                {/* <div style={{ textAlign: 'center' }}>
-                                    <a className={'link'} href={'#'} onClick={loadMoreComments}>
-                                        More Comments
-                                        </a>
-                                </div> */}
                                 <div className="row mt-3">
                                     <div className="col-lg-12">
-                                        {fields.length > 0 &&
+                                        {props?.commentFields.length > 0 &&
                                             <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
                         
                                                 {React.Children.toArray(
-                                                    fields.map((field) => {
+                                                    props?.commentFields.map((field) => {
                                                         if(field.name === 'commentcontent'){
                                                             return (
                                                                 input(field, Controller, control, errors)

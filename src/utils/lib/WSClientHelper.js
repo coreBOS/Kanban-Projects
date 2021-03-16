@@ -62,3 +62,9 @@ export const loadModuleFields = async (module) => {
     const modFields = await webService.doDescribe(module);
     return modFields;
 }
+
+export const capitalizeText = (str) => {
+    return str.replace(/\b\w/g, l => l.toUpperCase());
+}
+
+

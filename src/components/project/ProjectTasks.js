@@ -8,8 +8,8 @@ import ProjectTaskCard from "../utils/Card";
 import AddTaskCardForm from "../utils/AddCard";
 import AddTaskLaneForm from "../utils/AddLane";
 //import AddCardLink from '../utils/AddCardLink';
-import { loadModuleFields } from "../../utils/lib/WSClientHelper";
-import { MOD_PROJECT_TASK }  from '../../settings/constants'; 
+import { loadModuleFields, capitalizeText } from "../../utils/lib/WSClientHelper";
+import { MOD_PROJECT_TASK, MOD_COMMENT }  from '../../settings/constants'; 
 import {AddCardLink} from 'react-trello/src/styles/Base';
 
 
@@ -38,19 +38,19 @@ const ProjectTasks = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const lanesData = [];
     const [taskFields, setTaskFields] = useState([]);
+    const [commentFields, setCommentFields] = useState([]);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
 
-    const handleAddCardLink = (e) => {
+    const handleAddCardLink = () => {
         //console.log('laneId', laneId);
-        console.log('toggleprops', e);
         toggle();
     }
 
     const AddTaskCardLink = () => {
         return (
             <>
-                <AddCardLink onClick={(e) => handleAddCardLink(e)}>
+                <AddCardLink onClick={handleAddCardLink}>
                     {'Click to add task'}
                 </AddCardLink>
             </>
@@ -67,11 +67,17 @@ const ProjectTasks = (props) => {
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
         reloadProjectTasks();
+        loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
+            setTaskFields(modFields?.fields??[]);
+        });
+        loadModuleFields(MOD_COMMENT).then((modFields) => {
+            setCommentFields(modFields?.fields??[]);
+        });
     }, []);
 
     const prepareCardLanes = (tasks) => {
         for (const key in TASK_STATUS) {
-            if (TASK_STATUS.hasOwnProperty(key)) {
+            if (TASK_STATUS.hasOwnProperty(key)) { 
                 lanesData.push({
                     'id': TASK_STATUS[key],
                     'title': TASK_STATUS[key] || key,
@@ -83,7 +89,7 @@ const ProjectTasks = (props) => {
 
         tasks.forEach(task => {
             lanesData.forEach(lane => {
-                if (task.projecttaskstatus === lane.id) {
+                if (capitalizeText(task.projecttaskstatus) === capitalizeText(lane.id)) {
                     lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
                     lane.cards.push(task);
                 }
@@ -95,7 +101,7 @@ const ProjectTasks = (props) => {
 
     const fetchProjectTasks = async (projectId) => {
        
-        const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
+        const query = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${projectId}  ORDER BY id DESC`;
         setIsLoading(true);
         const tasks = await webService.doQuery(query);
         return tasks;
@@ -109,10 +115,6 @@ const ProjectTasks = (props) => {
         })
         .then((tasks) => {
             prepareCardLanes(tasks);
-            loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
-                //console.log(MOD_PROJECT_TASK, modFields);
-                setTaskFields(modFields?.fields??[]);
-            });
         })
         .catch(function (error) {
             console.log("Error: ", error)
@@ -143,13 +145,13 @@ const ProjectTasks = (props) => {
         console.log(card);
         reloadProjectTasks(false);
         //console.log(`New card added to lane ${laneId}`);
-        //console.dir(card);
+        console.log(card);
     };
 
-    const handleOnCardClick = (projectTaskId, projectTaskMetadata, projectTaskLaneId) => {
-        setClickedProjectTaskId(projectTaskId);
-        setClickedProjectTaskLaneId(projectTaskLaneId);
-        setClickedProjectTaskMetadata(projectTaskMetadata);
+    const handleOnCardClick = (taskId, metadata, laneId) => {
+        setClickedProjectTaskId(taskId);
+        setClickedProjectTaskLaneId(laneId);
+        setClickedProjectTaskMetadata(metadata);
         setOpenCommentDialog(true);
     };
 
@@ -168,8 +170,8 @@ const ProjectTasks = (props) => {
                 editable
                 canAddLanes
                 editLaneTitle
-                onCardAdd={(card) => handleCardAdd(card)}
-                onCardClick={handleOnCardClick}
+                onCardAdd={handleCardAdd}
+                onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
                 data={boardData}
                 onDataChange={shouldReceiveNewData}
                 eventBusHandle={setEventBus}
@@ -180,8 +182,8 @@ const ProjectTasks = (props) => {
                 onLaneAdd={t => debug('You added a lane with title ' + t.title)}
                 tagStyle={{ fontSize: '80%' }}
             />
-            {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} /> : null}
-            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} onCardAdd={(card) => handleCardAdd(card)} />}
+            {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} commentFields={commentFields} /> : null}
+            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardAdd={handleCardAdd} />}
         </div>
     )
 

@@ -3,7 +3,7 @@ import React from "react";
 import {MovableCardWrapper } from 'react-trello/src/styles/Base';
 
 const ProjectTaskCard = (props) => {
-
+    //console.log(props);
     /* const getTaskLabel = (data, type) => {
 
     }; */
@@ -43,19 +43,16 @@ const ProjectTaskCard = (props) => {
                         paddingBottom: 10,
                         justifyContent: 'space-between'
                     }}>
-                    {taskPriorityLabel(props.projecttaskpriority)}
-                    <div style={{fontSize: 12, fontWeight: 'bold'}}>{props.projecttask_no}</div>
+                    {props?.projecttaskname} - {props.projecttask_no} <br />
+                    <span>{taskPriorityLabel(props.projecttaskpriority)}</span>
                 </header>
                 <div style={{fontSize: 12}}>
                     <div>
                         <p>{props.description}</p>
                         <hr/>
-                        <div className={'pull-left'}>
-                            <b>Start Date: </b> {props.startdate}
-                            <br/>
-                            <b>End Date: </b> {props.enddate}
+                        <div className={'d-flex'}>
+                            <span className={'text-left'}>{props.startdate} - {props.enddate}</span>
                         </div>
-                        <div className={'pull-right'}></div>
                     </div>
                 </div>
             </MovableCardWrapper>
