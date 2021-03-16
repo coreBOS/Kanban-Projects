@@ -41,11 +41,16 @@ const ProjectTasks = (props) => {
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
 
+    const handleAddCardLink = (e) => {
+        //console.log('laneId', laneId);
+        console.log('toggleprops', e);
+        toggle();
+    }
 
     const AddTaskCardLink = () => {
         return (
             <>
-                <AddCardLink onClick={toggle}>
+                <AddCardLink onClick={(e) => handleAddCardLink(e)}>
                     {'Click to add task'}
                 </AddCardLink>
             </>
@@ -61,23 +66,7 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
-        setIsLoading(true);
-        fetchProjectTasks(props?.projectId).then((result) => {
-            return result;
-        })
-        .then((tasks) => {
-            prepareCardLanes(tasks);
-            loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
-                //console.log(MOD_PROJECT_TASK, modFields);
-                setTaskFields(modFields?.fields??[]);
-            });
-        })
-        .catch(function (error) {
-            console.log("Error: ", error)
-        })
-        .finally(() => {
-            setIsLoading(false);
-        })
+        reloadProjectTasks();
     }, []);
 
     const prepareCardLanes = (tasks) => {
@@ -96,16 +85,7 @@ const ProjectTasks = (props) => {
             lanesData.forEach(lane => {
                 if (task.projecttaskstatus === lane.id) {
                     lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
-                    lane.cards.push({
-                        'id': task.id,
-                        'taskNumber': task.projecttask_no,
-                        'taskDescription': task.description,
-                        'taskProgress': task.projecttaskprogress,
-                        'taskPriority': task.projecttaskpriority,
-                        'assignedTo': task,
-                        'startDate': task.startdate,
-                        'endDate': task.enddate,
-                    });
+                    lane.cards.push(task);
                 }
             });
         });
@@ -121,6 +101,26 @@ const ProjectTasks = (props) => {
         return tasks;
         
     };
+
+    const reloadProjectTasks = (showLoader = false) => {
+        setIsLoading(showLoader);
+        fetchProjectTasks(props?.projectId).then((result) => {
+            return result;
+        })
+        .then((tasks) => {
+            prepareCardLanes(tasks);
+            loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
+                //console.log(MOD_PROJECT_TASK, modFields);
+                setTaskFields(modFields?.fields??[]);
+            });
+        })
+        .catch(function (error) {
+            console.log("Error: ", error)
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
+    }
 
     const Loader = () => {
         return (
@@ -141,6 +141,7 @@ const ProjectTasks = (props) => {
 
     const handleCardAdd = (card) => {
         console.log(card);
+        reloadProjectTasks(false);
         //console.log(`New card added to lane ${laneId}`);
         //console.dir(card);
     };
@@ -180,7 +181,7 @@ const ProjectTasks = (props) => {
                 tagStyle={{ fontSize: '80%' }}
             />
             {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} /> : null}
-            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} />}
+            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} onCardAdd={(card) => handleCardAdd(card)} />}
         </div>
     )
 
