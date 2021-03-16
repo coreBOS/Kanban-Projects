@@ -20,7 +20,7 @@ const AddTaskCardForm = (props) => {
     //const {onCancel} = props;
     const classes = useStyles();
     const formMethods = useForm();
-    const { handleSubmit, control, errors } = formMethods;
+    const { handleSubmit, control, errors, reset } = formMethods;
     const [fields, setFields] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     
@@ -44,6 +44,7 @@ const AddTaskCardForm = (props) => {
 
     const handleAdd = (data) => {
         console.log(data);
+        reset();
     };
 
     const Loader = () => {

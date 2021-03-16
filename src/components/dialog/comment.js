@@ -30,7 +30,7 @@ const CommentDialog = (props) => {
     const [fields, setFields] = useState([]);
     const classes = useStyles();
     const formMethods = useForm();
-    const { handleSubmit, control, errors } = formMethods;
+    const { handleSubmit, control, errors, reset } = formMethods;
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
@@ -86,7 +86,7 @@ const CommentDialog = (props) => {
         setIsLoading(true);
         webService.doCreate('ModComments', data)
         .then((result) => {
-            console.log(result);
+            reset();
             loadComments(props.projectTaskId);
         })
         .catch(function (taskError) {
