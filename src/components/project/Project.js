@@ -9,7 +9,7 @@ import queryString from 'query-string';
 //import { TASK_STATUS } from '../../settings/constants';
 
 
-const Project = (props) => {
+const Project = () => {
 
     const [project, setProject] = useState({});
     const location = useLocation();
@@ -36,7 +36,7 @@ const Project = (props) => {
     return (    
         <>
             <h3 className="text-center"> {project?.projectname} </h3>
-            <ProjectTasks  {...{projectId: pid}} />
+            <ProjectTasks  {...{projectId: pid, project: project}} />
         </>
     )
 };

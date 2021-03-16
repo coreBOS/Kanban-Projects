@@ -5,11 +5,13 @@ import Board from "react-trello";
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
-//import AddTaskCardForm from "../utils/AddCard";
+import AddTaskCardForm from "../utils/AddCard";
 import AddTaskLaneForm from "../utils/AddLane";
-import AddCardLink from '../utils/AddCardLink';
-/* import { loadModuleFields } from "../../utils/lib/WSClientHelper";
-import { MOD_PROJECT_TASK }  from '../../settings/constants'; */
+//import AddCardLink from '../utils/AddCardLink';
+import { loadModuleFields } from "../../utils/lib/WSClientHelper";
+import { MOD_PROJECT_TASK }  from '../../settings/constants'; 
+import {AddCardLink} from 'react-trello/src/styles/Base';
+
 
 const handleDragStart = (cardId, laneId) => {
     console.log('drag started');
@@ -35,20 +37,50 @@ const ProjectTasks = (props) => {
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const lanesData = [];
+    const [taskFields, setTaskFields] = useState([]);
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+
+
+    const AddTaskCardLink = () => {
+        return (
+            <>
+                <AddCardLink onClick={toggle}>
+                    {'Click to add task'}
+                </AddCardLink>
+            </>
+        )
+    }
     
     const components = {
         Card: ProjectTaskCard,
         //NewCardForm: AddTaskCardForm,
         NewLaneForm: AddTaskLaneForm,
-        AddCardLink: AddCardLink
+        AddCardLink: AddTaskCardLink
     };
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
-        fetchProjectTask(props?.projectId);
+        setIsLoading(true);
+        fetchProjectTasks(props?.projectId).then((result) => {
+            return result;
+        })
+        .then((tasks) => {
+            prepareCardLanes(tasks);
+            loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
+                //console.log(MOD_PROJECT_TASK, modFields);
+                setTaskFields(modFields?.fields??[]);
+            });
+        })
+        .catch(function (error) {
+            console.log("Error: ", error)
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
     }, []);
 
-    const fetchProjectTask = (projectId) => {
+    const prepareCardLanes = (tasks) => {
         for (const key in TASK_STATUS) {
             if (TASK_STATUS.hasOwnProperty(key)) {
                 lanesData.push({
@@ -59,37 +91,35 @@ const ProjectTasks = (props) => {
                 });
             }
         } 
+
+        tasks.forEach(task => {
+            lanesData.forEach(lane => {
+                if (task.projecttaskstatus === lane.id) {
+                    lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
+                    lane.cards.push({
+                        'id': task.id,
+                        'taskNumber': task.projecttask_no,
+                        'taskDescription': task.description,
+                        'taskProgress': task.projecttaskprogress,
+                        'taskPriority': task.projecttaskpriority,
+                        'assignedTo': task,
+                        'startDate': task.startdate,
+                        'endDate': task.enddate,
+                    });
+                }
+            });
+        });
+
+        setBoardData({ ...boardData, lanes: lanesData });
+    }
+
+    const fetchProjectTasks = async (projectId) => {
+       
         const query = `SELECT * FROM ProjectTask WHERE projectid = ${projectId}  ORDER BY id DESC`;
         setIsLoading(true);
-        webService.doQuery(query)
-            .then(async function (result) {
-                //console.log(result);
-                result.forEach(task => {
-                    lanesData.forEach(lane => {
-                        if (task.projecttaskstatus === lane.id) {
-                            lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
-                            lane.cards.push({
-                                'id': task.id,
-                                'taskNumber': task.projecttask_no,
-                                'taskDescription': task.description,
-                                'taskProgress': task.projecttaskprogress,
-                                'taskPriority': task.projecttaskpriority,
-                                'assignedTo': task,
-                                'startDate': task.startdate,
-                                'endDate': task.enddate,
-                            });
-                        }
-                    });
-                });
-
-                setBoardData({ ...boardData, lanes: lanesData });
-            })
-            .catch(function (error) {
-                console.log("Error: ", error)
-            })
-            .finally(() => {
-                setIsLoading(false);
-            })
+        const tasks = await webService.doQuery(query);
+        return tasks;
+        
     };
 
     const Loader = () => {
@@ -150,7 +180,7 @@ const ProjectTasks = (props) => {
                 tagStyle={{ fontSize: '80%' }}
             />
             {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} /> : null}
-           
+            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} />}
         </div>
     )
 

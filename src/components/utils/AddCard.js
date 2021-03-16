@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from "react";
-import { useLocation } from 'react-router-dom';
+import React, {useState} from "react";
 import { webService } from "../../utils/api/webservice";
-import {Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter} from "reactstrap";
+import {Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
-import { loadModuleFields } from "../../utils/lib/WSClientHelper";
 import { MOD_PROJECT_TASK }  from '../../settings/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,15 +16,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddTaskCardForm = (props) => {
+    console.log(props);
     //const {onCancel} = props;
     const classes = useStyles();
     const formMethods = useForm();
     const { handleSubmit, control, errors, reset } = formMethods;
-    const [fields, setFields] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const url = new URLSearchParams(useLocation().search);
-    const projectid =  url.get('pid')??'';
-    
+
 
     const {
         //buttonLabel,
@@ -35,22 +31,11 @@ const AddTaskCardForm = (props) => {
         isOpen
       } = props;
 
-    useEffect(() => {
-        /* eslint-disable react-hooks/exhaustive-deps */
-        setIsLoading(true);
-        loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
-            //console.log(MOD_PROJECT_TASK, modFields);
-            setFields(modFields?.fields??[]);
-            setIsLoading(false);
-        });
-    }, []);
-
     const handleAdd = (data) => {
-        data.projectid = projectid??'';
+        data.projectid = props?.project?.id??'';
         setIsLoading(true);
         webService.doCreate(MOD_PROJECT_TASK, data)
-        .then((result) => {
-            console.log(result);
+        .then(() => {
             reset();
         })
         .catch(function (taskError) {
@@ -77,15 +62,18 @@ const AddTaskCardForm = (props) => {
         return (
             <div>
                 <Modal isOpen={isOpen} toggle={toggle} className={className}>
-                    <ModalHeader toggle={toggle}>New Task</ModalHeader>
-                    <ModalBody>
+                    <ModalHeader toggle={toggle}>
+                        New Task
+                    </ModalHeader>
+                    <ModalBody className={'pl-2 pr-4'}>
                         { isLoading &&
                             <Loader />
                         }
+                        <h5 className={'text-center'}>{props?.project?.projectname}</h5>
                         <form onSubmit={handleSubmit(handleAdd)} className={classes.root} noValidate autoComplete="off" style={{padding: '0 5px'}}>
         
                             {React.Children.toArray(
-                                fields?.map((field) => {
+                                props?.taskFields?.map((field) => {
                                     if(field.name !== 'projectid'){
                                         return (
                                             input(field, Controller, control, errors)
