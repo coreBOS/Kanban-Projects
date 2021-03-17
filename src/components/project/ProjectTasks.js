@@ -157,8 +157,8 @@ const ProjectTasks = (props) => {
             <Board
                 draggable
                 editable
-                canAddLanes
-                editLaneTitle
+                //canAddLanes
+                //editLaneTitle
                 onCardAdd={handleCardAdd}
                 onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
                 data={boardData}
