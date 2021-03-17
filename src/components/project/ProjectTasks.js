@@ -53,7 +53,7 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
-        reloadProjectTasks();
+        reloadProjectTasks(true);
         loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
             setTaskFields(modFields?.fields??[]);
         });
@@ -90,7 +90,6 @@ const ProjectTasks = (props) => {
     const fetchProjectTasks = async (projectId) => {
        
         const query = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${projectId}  ORDER BY id DESC`;
-        setIsLoading(true);
         const tasks = await webService.doQuery(query);
         return tasks;
         
@@ -127,8 +126,7 @@ const ProjectTasks = (props) => {
         cardDetails.projecttaskstatus = cardDetails.laneId;
         delete cardDetails['laneId'];
         webService.doUpdate(MOD_PROJECT_TASK, cardDetails)
-        .then((result) => {
-            console.log(result);
+        .then(() => {
             reloadProjectTasks(false);
         })
         .catch(function (taskError) {
