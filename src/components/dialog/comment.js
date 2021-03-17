@@ -116,21 +116,17 @@ const CommentDialog = (props) => {
                             </div>
                             <div className="my-1">
                                 <span>Comments</span>
-                                <div>
-                                    {comments.map((comment, commentIndex) => {
-                                        return (
-                                            <div className="card mb-2" key={commentIndex}>
-                                                <div className="card-body">
-                                                    <h5 className="card-title">{comment.creator_firstname}</h5>
-                                                    <p style={{ fontSize: '12px' }} className="card-text">{comment.commentcontent}</p>
-                                                </div>
-                                                <div className="card-footer bg-transparent border">
-                                                    <p className="card-text"><small className="text-muted">{comment.createdtime}</small></p>
-                                                </div>
+                                {comments.map((comment, commentIndex) => {
+                                    return (
+                                        <div className="card mt-2" key={commentIndex}>
+                                            <div className="card-body">
+                                                <h5 className="card-title">{comment.creator_firstname}</h5>
+                                                <h6 className="card-subtitle mb-2 text-muted">{comment.createdtime}</h6>
+                                                <p style={{ fontSize: '12px' }} className="card-text">{comment.commentcontent}</p>
                                             </div>
-                                        )
-                                    })}
-                                 </div>
+                                        </div>
+                                    )
+                                })}
                             </div>
                             <div className="fixedBottomInput border-top w-100 mx-n3">
                                 <div style={{ padding: '15px 34px 5px 10px' }}>

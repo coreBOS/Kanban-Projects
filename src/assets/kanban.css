@@ -73,15 +73,6 @@ html, body{
     font-size: 100%;
 }
 
-.commentModal .modal-header h4{
-    font-size: 14px !important;
-}
-
-.commentModal .modal-title{
-    display: inline !important;
-    margin-left: 10px;
-}
-
 .commentModal .modal-header button{
     outline: none !important;
 }
