@@ -47,11 +47,12 @@ const ProjectTaskCard = (props) => {
                     <span>{taskPriorityLabel(props.projecttaskpriority)}</span>
                 </header>
                 <div style={{fontSize: 12}}>
-                    <div>
+                    <div className={'d-block'}>
                         <p>{props.description}</p>
                         <hr/>
                         <div className={'d-flex'}>
-                            <span className={'text-left'}>{props.startdate} - {props.enddate}</span>
+                            <span className={'mr-2'}>{props.startdate} - {props.enddate}</span>
+                            <span className={'mr-2'}>Wor. Hours: {props.projecttaskhours}</span>
                         </div>
                     </div>
                 </div>

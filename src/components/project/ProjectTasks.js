@@ -82,7 +82,7 @@ const ProjectTasks = (props) => {
                 lanesData.push({
                     'id': TASK_STATUS[key],
                     'title': TASK_STATUS[key] || key,
-                    'label': '0',
+                    'label': 0,
                     'cards': [],
                 });
             }
@@ -91,7 +91,7 @@ const ProjectTasks = (props) => {
         tasks.forEach(task => {
             lanesData.forEach(lane => {
                 if (capitalizeText(task.projecttaskstatus) === capitalizeText(lane.id)) {
-                    lane.label = `${Number(lane.label) + Number(task.projecttaskhours)}`;
+                    lane.label = lane.label+1;
                     lane.cards.push(task);
                 }
             });
