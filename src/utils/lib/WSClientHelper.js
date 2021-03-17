@@ -67,4 +67,18 @@ export const capitalizeText = (str) => {
     return str.replace(/\b\w/g, l => l.toUpperCase());
 }
 
+export const dateParser = v => {
+    const regexp = /(\d{4})-(\d{2})-(\d{2})/
+    let date = new Date(v);
+
+    let match = regexp.exec(date.toISOString());
+    if (match === null) return;
+    let year = match[1];
+    let month = match[2];
+    let day = match[3];
+
+    const d = [year, month, day].join("-");
+    return d;
+  };
+
 
