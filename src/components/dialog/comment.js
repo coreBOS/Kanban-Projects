@@ -94,7 +94,7 @@ const CommentDialog = (props) => {
                         <Loader />
                     }
                     <div className="modal-content">
-                        <div className="modal-header d-flex">
+                        <div className="modal-header">
                             <h5 className="modal-title" id={props.projectTaskId}>{projectTask.projecttaskname}</h5>
                             <span className="fillRemainingSpace"></span>
                             <div className="d-flex">
@@ -111,12 +111,12 @@ const CommentDialog = (props) => {
                             </button>
                         </div>
                         <div className="modal-body">
-                            <div style={{ fontSize: '13px' }}>
+                            <div className={'my-1'} style={{ fontSize: '13px' }}>
                                 <p>{projectTask.description}</p>
                             </div>
                             <div className="my-1">
-                                <h6>Comments</h6>
-                                <div style={{ maxHeight: '20rem', overflow: 'auto' }}>
+                                <span>Comments</span>
+                                <div>
                                     {comments.map((comment, commentIndex) => {
                                         return (
                                             <div className="card mb-2" key={commentIndex}>
@@ -131,28 +131,27 @@ const CommentDialog = (props) => {
                                         )
                                     })}
                                  </div>
-                                <div className="row mt-3">
-                                    <div className="col-lg-12">
-                                        {props?.commentFields.length > 0 &&
-                                            <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
-                        
-                                                {React.Children.toArray(
-                                                    props?.commentFields.map((field) => {
-                                                        if(field.name === 'commentcontent'){
-                                                            return (
-                                                                input(field, Controller, control, errors)
-                                                            );
-                                                        }else {
-                                                            return null;
-                                                        }
-                                                    })
-                                                )}
+                            </div>
+                            <div className="fixedBottomInput border-top w-100 mx-n3">
+                                <div style={{ padding: '15px 34px 5px 10px' }}>
+                                    {props?.commentFields.length > 0 &&
+                                        <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
+                    
+                                            {React.Children.toArray(
+                                                props?.commentFields.map((field) => {
+                                                    if(field.name === 'commentcontent'){
+                                                        return (
+                                                            input(field, Controller, control, errors)
+                                                        );
+                                                    }else {
+                                                        return null;
+                                                    }
+                                                })
+                                            )}
 
-                                                <Button type="submit" variant="contained" color="primary">Comment</Button>
-                                            </form>
-                                        }
-                                    </div>
-
+                                            <Button type="submit" variant="contained" color="primary">Comment</Button>
+                                        </form>
+                                    }
                                 </div>
                             </div>
                         </div>

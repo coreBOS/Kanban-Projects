@@ -85,7 +85,13 @@ html, body{
 .commentModal .modal-header button{
     outline: none !important;
 }
-
+.fixedBottomInput{
+    position: fixed;
+    bottom: 0;
+    z-index: 100;
+    border-color: #ddd;
+    background-color: #ddd;
+}
 .project-comments .card{
     border: none !important;
 }
