@@ -9,6 +9,7 @@ import { webService } from "../../utils/api/webservice";
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
+import Loader from "../utils/Loader";
 import Button from '@material-ui/core/Button';
 import { MOD_COMMENT, MOD_PROJECT_TASK }  from '../../settings/constants';
 
@@ -63,17 +64,6 @@ const CommentDialog = (props) => {
         }
     };
 
-    const Loader = () => {
-        return (
-            <div className="bg-transparent" style={{ position: 'fixed', top: '50%', left: '50%', zIndex: '1000' }}>
-                <div className="text-center">
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
     const onSubmit = data => {
         data.assigned_user_id = projectTask?.assigned_user_id;
@@ -99,9 +89,6 @@ const CommentDialog = (props) => {
     return (
         <React.Fragment>
             <div className="commentModal modal right fade" tabIndex="-1" role="dialog" aria-labelledby={props.projectTaskId}>
-            { isLoading &&
-                <Loader />
-            }
                 <div className="modal-dialog" role="document">
                     { isLoading &&
                         <Loader />

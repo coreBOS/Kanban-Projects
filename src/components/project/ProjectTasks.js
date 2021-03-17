@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { webService } from "../../utils/api/webservice";
 import { TASK_STATUS } from '../../settings/constants';
 import Board from "react-trello";
+import { AddCardLink } from 'react-trello/src/styles/Base';
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
 import AddTaskCardForm from "../utils/AddCard";
 import AddTaskLaneForm from "../utils/AddLane";
+import Loader from "../utils/Loader";
 //import AddCardLink from '../utils/AddCardLink';
 import { loadModuleFields, capitalizeText } from "../../utils/lib/WSClientHelper";
 import { MOD_PROJECT_TASK, MOD_COMMENT }  from '../../settings/constants'; 
-import {AddCardLink} from 'react-trello/src/styles/Base';
 
 
 const handleDragStart = (cardId, laneId) => {
@@ -122,18 +123,6 @@ const ProjectTasks = (props) => {
         .finally(() => {
             setIsLoading(false);
         })
-    }
-
-    const Loader = () => {
-        return (
-            <div className="bg-transparent text-white" style={{position: 'fixed', top: '50%', left: '50%', zIndex: '1000'}}>
-                <div className="text-center">
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-            </div>
-        )
     }
 
     const shouldReceiveNewData = nextData => {

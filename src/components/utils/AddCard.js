@@ -4,6 +4,7 @@ import {Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from "re
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
+import Loader from "../utils/Loader";
 import { MOD_PROJECT_TASK }  from '../../settings/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,18 +47,6 @@ const AddTaskCardForm = (props) => {
             setIsLoading(false);
         });
     };
-
-    const Loader = () => {
-        return (
-            <div className="bg-transparent text-primary w-100 h-100" style={{position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, zIndex: '10000'}}>
-                <div className="text-center" style={{position: 'absolute', top: '50%', left: '50%'}}>
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
 
         return (

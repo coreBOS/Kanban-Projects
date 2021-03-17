@@ -5,6 +5,7 @@ import {webService} from "../../utils/api/webservice";
 import 'tui-grid/dist/tui-grid.css';
 import Grid from '@toast-ui/react-grid';
 //import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import Loader from "../utils/Loader";
 
 import {
     PROJECT,
@@ -65,17 +66,6 @@ const Projects = () => {
         fetchProjects(q);
     };
 
-    const Loader = () => {
-        return (
-            <div className="bg-transparent" style={{position: 'fixed', top: '50%', left: '50%', zIndex: '1000'}}>
-                <div className="text-center">
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className="container">
@@ -90,10 +80,12 @@ const Projects = () => {
                 heightResizable={true}
                 rowHeaders={['rowNum']}  
             />
-            <div className="my-3 d-flex float-right">
-                <button className="btn btn-primary mx-1" onClick={() => paginate(page, -1)} disabled={ page <= 1 || isLoading } >Previous</button>
-                <button className="btn btn-primary mx-1" onClick={() => paginate(page, 1)} next="true" disabled={ isLoading } >Next</button>
-            </div>
+            {projects && projects.length > 0 &&
+                <div className="my-3 d-flex float-right">
+                    <button className="btn btn-primary mx-1" onClick={() => paginate(page, -1)} disabled={ page <= 1 || isLoading } >Previous</button>
+                    <button className="btn btn-primary mx-1" onClick={() => paginate(page, 1)} next="true" disabled={ isLoading } >Next</button>
+                </div>
+            }
         </div>
     )
 };
