@@ -14,19 +14,6 @@ import { loadModuleFields, capitalizeText } from "../../utils/lib/WSClientHelper
 import { MOD_PROJECT_TASK, MOD_COMMENT }  from '../../settings/constants'; 
 
 
-const handleDragStart = (cardId, laneId) => {
-    console.log('drag started');
-    console.log(`cardId: ${cardId}`);
-    console.log(`laneId: ${laneId}`)
-};
-
-const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
-    console.log('drag ended');
-    console.log(`cardId: ${cardId}`);
-    console.log(`sourceLaneId: ${sourceLaneId}`);
-    console.log(`targetLaneId: ${targetLaneId}`);
-};
-
 const ProjectTasks = (props) => {
     //const [projectTasks, setProjectTasks] = useState([]);
     const [boardData, setBoardData] = useState({ lanes: [] });
@@ -44,7 +31,6 @@ const ProjectTasks = (props) => {
     const toggle = () => setModal(!modal);
 
     const handleAddCardLink = () => {
-        //console.log('laneId', laneId);
         toggle();
     }
 
@@ -82,7 +68,7 @@ const ProjectTasks = (props) => {
                 lanesData.push({
                     'id': TASK_STATUS[key],
                     'title': TASK_STATUS[key] || key,
-                    'label': 0,
+                    'label': '0',
                     'cards': [],
                 });
             }
@@ -91,7 +77,8 @@ const ProjectTasks = (props) => {
         tasks.forEach(task => {
             lanesData.forEach(lane => {
                 if (capitalizeText(task.projecttaskstatus) === capitalizeText(lane.id)) {
-                    lane.label = lane.label+1;
+                    lane.label = `${Number(lane.label) + 1}`;
+                    //lane.label = lane.label+1;
                     lane.cards.push(task);
                 }
             });
@@ -125,16 +112,32 @@ const ProjectTasks = (props) => {
         })
     }
 
-    const shouldReceiveNewData = nextData => {
+    /*  const shouldReceiveNewData = nextData => {
         console.log('New card has been added');
         console.log(nextData);
+    }; */
+
+   /*  const handleDragStart = (cardId, laneId) => {
+        console.log('drag started');
+        console.log(`cardId: ${cardId}`);
+        console.log(`laneId: ${laneId}`)
+    }; */
+    
+    const handleDragEnd = (cardId, sourceLaneId, targetLaneId, position, cardDetails) => {
+        cardDetails.projecttaskstatus = cardDetails.laneId;
+        delete cardDetails['laneId'];
+        webService.doUpdate(MOD_PROJECT_TASK, cardDetails)
+        .then((result) => {
+            console.log(result);
+            reloadProjectTasks(false);
+        })
+        .catch(function (taskError) {
+            console.log("Error: ", taskError);
+        });
     };
 
-    const handleCardAdd = (card) => {
-        console.log(card);
+    const handleCardAdd = () => {
         reloadProjectTasks(false);
-        //console.log(`New card added to lane ${laneId}`);
-        console.log(card);
     };
 
     const handleOnCardClick = (taskId, metadata, laneId) => {
@@ -162,9 +165,9 @@ const ProjectTasks = (props) => {
                 onCardAdd={handleCardAdd}
                 onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
                 data={boardData}
-                onDataChange={shouldReceiveNewData}
+                //onDataChange={shouldReceiveNewData}
                 eventBusHandle={setEventBus}
-                handleDragStart={handleDragStart}
+                //handleDragStart={handleDragStart}
                 handleDragEnd={handleDragEnd}
                 components={components}
                 onLaneUpdate={(laneId, data) => debug(`onLaneUpdate: ${laneId} -> ${data.title}`)}
