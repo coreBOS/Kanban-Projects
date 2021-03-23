@@ -35,7 +35,6 @@ const Project = () => {
 
     return (    
         <>
-            <h3 className="text-center"> {project?.projectname} </h3>
             <ProjectTasks  {...{projectId: pid, project: project}} />
         </>
     )

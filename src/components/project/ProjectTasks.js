@@ -12,6 +12,12 @@ import Loader from "../utils/Loader";
 //import AddCardLink from '../utils/AddCardLink';
 import { loadModuleFields, capitalizeText } from "../../utils/lib/WSClientHelper";
 import { MOD_PROJECT_TASK, MOD_COMMENT }  from '../../settings/constants'; 
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { styledInput, BootstrapInput } from '../utils/styles';
+
 
 
 const ProjectTasks = (props) => {
@@ -29,6 +35,9 @@ const ProjectTasks = (props) => {
     const [commentFields, setCommentFields] = useState([]);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
+    const classes = styledInput();
+    const [sortField, setSortField] = useState({name: 'id', sortOrder: 'DESC', label: 'ID'});
+
 
     const handleAddCardLink = () => {
         toggle();
@@ -54,6 +63,9 @@ const ProjectTasks = (props) => {
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
         reloadProjectTasks(true);
+        webService.doDescribe(MOD_PROJECT_TASK).then((result) => {
+            console.log(result);
+        })
         loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
             setTaskFields(modFields?.fields??[]);
         });
@@ -89,7 +101,7 @@ const ProjectTasks = (props) => {
 
     const fetchProjectTasks = async (projectId) => {
        
-        const query = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${projectId}  ORDER BY id DESC`;
+        const query = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${projectId}  ORDER BY ${sortField.name} ${sortField.sortOrder}`;
         const tasks = await webService.doQuery(query);
         return tasks;
         
@@ -149,32 +161,62 @@ const ProjectTasks = (props) => {
         setOpenCommentDialog(false)
     };
 
-    return (
-        <div className={'kanban-container'}>
+    const handleSortChange = (event) => {
+        const sortObj = taskFields.filter(field => field.name === event.target.value)?.[0];
+        const newSort = {name: sortObj?.name, label: sortObj?.label, sortOrder: sortField?.sortOrder};
+        setSortField(newSort);
+    }
 
-            { isLoading &&
-                <Loader />
-            }
-            <Board
-                draggable
-                editable
-                //canAddLanes
-                //editLaneTitle
-                onCardAdd={handleCardAdd}
-                onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
-                data={boardData}
-                //onDataChange={shouldReceiveNewData}
-                eventBusHandle={setEventBus}
-                //handleDragStart={handleDragStart}
-                handleDragEnd={handleDragEnd}
-                components={components}
-                onLaneUpdate={(laneId, data) => debug(`onLaneUpdate: ${laneId} -> ${data.title}`)}
-                onLaneAdd={t => debug('You added a lane with title ' + t.title)}
-                tagStyle={{ fontSize: '80%' }}
-            />
-            {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} commentFields={commentFields} /> : null}
-            {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardAdd={handleCardAdd} />}
-        </div>
+    return (
+        <>
+            <h3 className="text-center"> {props?.project?.projectname} </h3>
+            <div className={'row'}>
+                <div className={'col-md-4'}>
+                    {taskFields.length > 0 && 
+                         <FormControl variant="outlined" className={classes.formControl}>
+                         <InputLabel id="sortByInputLabel">{'Sort by'}</InputLabel>
+                         <Select
+                            labelId="sortByInputLabel"
+                            id="sortByInput"
+                            value={sortField.name}
+                            onChange={handleSortChange}
+                            label={sortField.label}
+                            input={<BootstrapInput />}
+                         >
+                             {React.Children.toArray(
+                                 taskFields.map(field => (field.name !== 'email' && field.name !== 'description') ? <MenuItem value={field.name}>{field.label}</MenuItem> : null)
+                             )}
+                         </Select>
+                     </FormControl>
+                    }
+                </div>
+            </div>
+            <div className={'kanban-container'}>
+
+                { isLoading &&
+                    <Loader />
+                }
+                <Board
+                    draggable
+                    editable
+                    //canAddLanes
+                    //editLaneTitle
+                    onCardAdd={handleCardAdd}
+                    onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
+                    data={boardData}
+                    //onDataChange={shouldReceiveNewData}
+                    eventBusHandle={setEventBus}
+                    //handleDragStart={handleDragStart}
+                    handleDragEnd={handleDragEnd}
+                    components={components}
+                    onLaneUpdate={(laneId, data) => debug(`onLaneUpdate: ${laneId} -> ${data.title}`)}
+                    onLaneAdd={t => debug('You added a lane with title ' + t.title)}
+                    tagStyle={{ fontSize: '80%' }}
+                />
+                {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} commentFields={commentFields} /> : null}
+                {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardAdd={handleCardAdd} />}
+            </div>
+        </>
     )
 
 };
