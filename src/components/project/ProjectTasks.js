@@ -17,6 +17,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { styledInput, BootstrapInput } from '../utils/styles';
+import IconButton from '@material-ui/core/IconButton';
+import SortIcon from '@material-ui/icons/Sort';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 
 
 
@@ -173,21 +177,33 @@ const ProjectTasks = (props) => {
             <div className={'row'}>
                 <div className={'col-md-4'}>
                     {taskFields.length > 0 && 
-                         <FormControl variant="outlined" className={classes.formControl}>
-                         <InputLabel id="sortByInputLabel">{'Sort by'}</InputLabel>
-                         <Select
-                            labelId="sortByInputLabel"
-                            id="sortByInput"
-                            value={sortField.name}
-                            onChange={handleSortChange}
-                            label={sortField.label}
-                            input={<BootstrapInput />}
-                         >
-                             {React.Children.toArray(
-                                 taskFields.map(field => (field.name !== 'email' && field.name !== 'description') ? <MenuItem value={field.name}>{field.label}</MenuItem> : null)
-                             )}
-                         </Select>
-                     </FormControl>
+                        <div className={'d-flex'}>
+                                <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="sortByInputLabel" className={'ml-n2'}>{'Sort by'}</InputLabel>
+                                <Select
+                                    labelId="sortByInputLabel"
+                                    id="sortByInput"
+                                    value={sortField.name}
+                                    onChange={handleSortChange}
+                                    label={sortField.label}
+                                    input={<BootstrapInput />}
+                                    className={'ml-1'}
+                                >
+                                    {React.Children.toArray(
+                                        taskFields.map(field => (field.name !== 'email' && field.name !== 'description') ? <MenuItem value={field.name}>{field.label}</MenuItem> : null)
+                                    )}
+                                </Select>
+                            </FormControl>
+
+                            <div className={'mt-2'}>
+                                <IconButton aria-label="sort" className={classes.margin +' IconButtonStyled'} size="medium">
+                                    <SortIcon fontSize="large" />
+                                    {
+                                       sortField.sortOrder === 'DESC' ? <ArrowDownwardIcon fontSize="large" />:<ArrowUpwardIcon fontSize="large" />
+                                    }
+                                </IconButton>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
