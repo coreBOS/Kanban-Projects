@@ -47,6 +47,7 @@ const ProjectTasks = (props) => {
     /* eslint-disable no-unused-vars */
     const [eventBus, setEventBus] = useState([]);
     const [clickedProjectTaskId, setClickedProjectTaskId] = useState('');
+    const [clickedProjectTask, setClickedProjectTask] = useState(null);
     const [clickedProjectTaskMetadata, setClickedProjectTaskMetadata] = useState('');
     const [clickedProjectTaskLaneId, setClickedProjectTaskLaneId] = useState('');
     const [openCommentDialog, setOpenCommentDialog] = useState(false);
@@ -68,6 +69,10 @@ const ProjectTasks = (props) => {
 
 
     const handleAddCardLink = () => {
+        setClickedProjectTask(null);
+        setClickedProjectTaskId(null);
+        setClickedProjectTaskLaneId(null);
+        setClickedProjectTaskMetadata(null);
         toggle();
     }
 
@@ -230,14 +235,24 @@ const ProjectTasks = (props) => {
         setCardOptionOpen(true);
     };
     
-    const handleCardCloseOption = (close) => {
-        if(close){
-            setCardOptionOpen(!close);
-        }else{
-            setCardOptionOpen(close);
-            setOpenCommentDialog(!close);
+    const handleCardOption = (action) => {
+        setCardOptionOpen(false);
+        if(action === 'edit'){
+            setIsLoading(true);
+            const q = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE id = ${clickedProjectTaskId}`;
+            webService.doQuery(q).then(result => {
+                setClickedProjectTask(result[0]??{});
+                setIsLoading(false);
+                toggle();
+            })
         }
+        //delete condition
     };
+
+    const openCommentModal = () => {
+        setCardOptionOpen(false);
+        setOpenCommentDialog(true);
+     };
 
 
     return (
@@ -341,13 +356,13 @@ const ProjectTasks = (props) => {
                     tagStyle={{ fontSize: '80%' }}
                 />
                 {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} commentFields={commentFields} /> : null}
-                {modal && <TaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardUpdate={handleCardUpdate} />}
+                {modal && <TaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardUpdate={handleCardUpdate} projectTaskId={clickedProjectTaskId} projectTask={clickedProjectTask} />}
             </div>
 
             <div className={'cardOptionModal'}>
               <Dialog
                 open={cardOptionOpen}
-                onClose={() => handleCardCloseOption(true)}
+                onClose={() => handleCardOption('')}
               >
                 <DialogContent>
                 <List
@@ -355,19 +370,19 @@ const ProjectTasks = (props) => {
                     className={classes.root}
                     >
 
-                    <ListItem button onClick={() => handleCardCloseOption(false)}>
+                    <ListItem button onClick={openCommentModal}>
                         <ListItemIcon>
                         <VisibilityIcon />
                         </ListItemIcon>
                         <ListItemText primary="View" />
                     </ListItem>
-                    <ListItem button onClick={() => handleCardCloseOption(true)}>
+                    <ListItem button onClick={() => handleCardOption('edit')}>
                         <ListItemIcon>
                         <EditIcon />
                         </ListItemIcon>
                         <ListItemText primary="Edit" />
                     </ListItem>
-                    <ListItem button onClick={() => handleCardCloseOption(true)}>
+                    <ListItem button onClick={() => handleCardOption('delete')}>
                         <ListItemIcon>
                         <DeleteIcon />
                         </ListItemIcon>

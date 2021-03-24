@@ -33,7 +33,10 @@ const TaskCardForm = (props) => {
         isOpen
       } = props;
 
-    const handleCard = (data) => {
+    const handleCard = async (data) => {
+        if(props.projectTask){
+            data.id = props.projectTask.id;
+        }
         data.projectid = props?.project?.id??'';
         if(data.startdate){
             data.startdate = dateParser(data.startdate); 
@@ -42,17 +45,14 @@ const TaskCardForm = (props) => {
             data.enddate = dateParser(data.enddate); 
         }
         setIsLoading(true);
-        webService.doCreate(MOD_PROJECT_TASK, data)
-        .then(() => {
-            props.handleCardUpdate(); 
-            reset();
-        })
-        .catch(function (taskError) {
-            console.log("Error: ", taskError);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        });
+        if(props.projectTask){
+            await webService.doUpdate(MOD_PROJECT_TASK, data)
+        }else{
+            await webService.doCreate(MOD_PROJECT_TASK, data)
+        }
+        props.handleCardUpdate(); 
+        reset();
+        setIsLoading(false);
     };
 
 
@@ -72,6 +72,9 @@ const TaskCardForm = (props) => {
                             {React.Children.toArray(
                                 props?.taskFields?.map((field) => {
                                     if(field.name !== 'projectid'){
+                                        if(props.projectTask){
+                                            field.default = props.projectTask[field.name];
+                                        }
                                         return (
                                             input(field, Controller, control, errors)
                                         );
@@ -80,7 +83,7 @@ const TaskCardForm = (props) => {
                                 })
                             )}
                             <FormGroup className="w-50 mx-auto">
-                                <Button type="submit" variant="contained" color="primary" className={'w-100'}>Add</Button>
+                                <Button type="submit" variant="contained" color="primary" className={'w-100'}>Save</Button>
                             </FormGroup>
                         </form>
                     </ModalBody>
