@@ -140,3 +140,7 @@ html, body{
 .IconButtonStyled:focus{
     outline: none;
 }
+.filterForm .MuiSelect-select{
+    width: 100%;
+    min-width: 154px !important;
+}

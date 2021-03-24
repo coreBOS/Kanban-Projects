@@ -21,6 +21,13 @@ import IconButton from '@material-ui/core/IconButton';
 import SortIcon from '@material-ui/icons/Sort';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import { useForm, Controller } from "react-hook-form";
+import Button from '@material-ui/core/Button';
+import { input } from "../../utils/input";
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 
@@ -36,11 +43,14 @@ const ProjectTasks = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const lanesData = [];
     const [taskFields, setTaskFields] = useState([]);
+    const [taskFilterFields, setTaskFilterFields] = useState([]);
     const [commentFields, setCommentFields] = useState([]);
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
     const classes = styledInput();
     const [sortField, setSortField] = useState({name: 'id', sortOrder: 'DESC', label: 'ID'});
+    const formMethods = useForm();
+    const { handleSubmit, control, errors, reset } = formMethods;
 
 
     const handleAddCardLink = () => {
@@ -70,8 +80,13 @@ const ProjectTasks = (props) => {
         webService.doDescribe(MOD_PROJECT_TASK).then((result) => {
             console.log(result);
         })
-        loadModuleFields(MOD_PROJECT_TASK).then((modFields) => {
-            setTaskFields(modFields?.fields??[]);
+        loadModuleFields(MOD_PROJECT_TASK).then((modDescribe) => {
+            let filterFields = modDescribe?.filterFields?.fields??[];
+            for(let index = 0; index < filterFields.length; index++) {
+                filterFields[index] = modDescribe?.fields.filter(field => field.name === filterFields[index])[0];
+            }
+            setTaskFilterFields(filterFields);
+            setTaskFields(modDescribe?.fields??[]);
         });
         loadModuleFields(MOD_COMMENT).then((modFields) => {
             setCommentFields(modFields?.fields??[]);
@@ -165,11 +180,21 @@ const ProjectTasks = (props) => {
         setOpenCommentDialog(false)
     };
 
-    const handleSortChange = (event) => {
-        const sortObj = taskFields.filter(field => field.name === event.target.value)?.[0];
-        const newSort = {name: sortObj?.name, label: sortObj?.label, sortOrder: sortField?.sortOrder};
+    const handleSortChange = (event=null) => {
+        const sortObj = taskFields.filter(field => field.name === event?.target?.value)?.[0];
+        let sortOrder = '';
+        if(sortObj){
+            sortOrder = sortField.sortOrder;
+        }else{
+            sortOrder = sortField.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+        }
+        const newSort = {name: sortObj?.name??sortField.name, label: sortObj?.label??sortField.label, sortOrder: sortOrder};
         setSortField(newSort);
     }
+
+    const onSubmit = data => {
+       console.log(data);
+    };
 
     return (
         <>
@@ -179,33 +204,68 @@ const ProjectTasks = (props) => {
                     {taskFields.length > 0 && 
                         <div className={'d-flex'}>
                                 <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="sortByInputLabel" className={'ml-n2'}>{'Sort by'}</InputLabel>
-                                <Select
-                                    labelId="sortByInputLabel"
-                                    id="sortByInput"
-                                    value={sortField.name}
-                                    onChange={handleSortChange}
-                                    label={sortField.label}
-                                    input={<BootstrapInput />}
-                                    className={'ml-1'}
-                                >
-                                    {React.Children.toArray(
-                                        taskFields.map(field => (field.name !== 'email' && field.name !== 'description') ? <MenuItem value={field.name}>{field.label}</MenuItem> : null)
-                                    )}
-                                </Select>
-                            </FormControl>
+                                    <InputLabel id="sortByInputLabel" className={'ml-n2'}>{'Sort by'}</InputLabel>
+                                    <Select
+                                        labelId="sortByInputLabel"
+                                        id="sortByInput"
+                                        value={sortField.name}
+                                        onChange={handleSortChange}
+                                        label={sortField.label}
+                                        input={<BootstrapInput />}
+                                        className={'ml-1'}
+                                    >
+                                        {React.Children.toArray(
+                                            taskFields.map(field => (field.name !== 'email' && field.name !== 'description') ? <MenuItem value={field.name}>{field.label}</MenuItem> : null)
+                                        )}
+                                    </Select>
+                                </FormControl>
 
-                            <div className={'mt-2'}>
-                                <IconButton aria-label="sort" className={classes.margin +' IconButtonStyled'} size="medium">
-                                    <SortIcon fontSize="large" />
-                                    {
-                                       sortField.sortOrder === 'DESC' ? <ArrowDownwardIcon fontSize="large" />:<ArrowUpwardIcon fontSize="large" />
-                                    }
-                                </IconButton>
-                            </div>
+                                <div className={'mt-2'}>
+                                    <IconButton onClick={handleSortChange} aria-label="sort" className={classes.margin +' IconButtonStyled'} size="medium">
+                                        <SortIcon fontSize="large" />
+                                        {
+                                        sortField.sortOrder === 'DESC' ? <ArrowDownwardIcon fontSize="large" />:<ArrowUpwardIcon fontSize="large" />
+                                        }
+                                    </IconButton>
+                                </div>
                         </div>
                     }
                 </div>
+                {taskFilterFields.length > 0 && 
+                    <div className={'px-2'}>
+                    <Accordion>
+                        <AccordionSummary
+                            className={'w-25 px-4'}
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                            >
+                            Advanced Filter
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <div className={'row'}>
+                                <form onSubmit={handleSubmit(onSubmit)} className={classes.root +' filterForm'} noValidate>
+                                    <div className={'row'}>
+                                        {React.Children.toArray(
+                                            taskFilterFields.map((field) => {
+                                                const fieldInput = input(field, Controller, control, errors);
+                                                return (
+                                                    <div className={'col-md-2 mt-3'}>
+                                                        {fieldInput}
+                                                    </div>
+                                                )
+                                            })
+                                        )}
+                                        <div className="col-md-4 mt-4">
+                                            <Button type="submit" variant="contained" color="primary" className={'mt-4'}>Filter</Button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                </div>
+                }
             </div>
             <div className={'kanban-container'}>
 

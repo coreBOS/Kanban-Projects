@@ -3,10 +3,16 @@ import InputBase from '@material-ui/core/InputBase';
 
 
 export const styledInput = makeStyles((theme) => ({
-    formControl: {
+  root: {
+    '& > *': {
       margin: theme.spacing(1),
-      minWidth: 200,
+      width: '100%'
     },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 200,
+  },
 }));
 
 export const BootstrapInput = withStyles((theme) => ({
@@ -22,6 +28,8 @@ export const BootstrapInput = withStyles((theme) => ({
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 26px 10px 12px',
+    //width: '100%',
+    //minWidth: 0,
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     // Use the system font instead of the default Roboto font.
     fontFamily: [
