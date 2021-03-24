@@ -52,6 +52,9 @@ const ProjectTasks = (props) => {
     const formMethods = useForm();
     const { handleSubmit, control, errors, reset } = formMethods;
 
+    const defaultQuery = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${props?.projectId}`;
+    const [query, setQuery] = useState(defaultQuery);
+
 
     const handleAddCardLink = () => {
         toggle();
@@ -76,10 +79,6 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
-        reloadProjectTasks(true);
-        webService.doDescribe(MOD_PROJECT_TASK).then((result) => {
-            console.log(result);
-        })
         loadModuleFields(MOD_PROJECT_TASK).then((modDescribe) => {
             let filterFields = modDescribe?.filterFields?.fields??[];
             for(let index = 0; index < filterFields.length; index++) {
@@ -92,6 +91,12 @@ const ProjectTasks = (props) => {
             setCommentFields(modFields?.fields??[]);
         });
     }, []);
+
+    useEffect(() => {
+        /* eslint-disable react-hooks/exhaustive-deps */
+        const q = query +`${' ORDER BY '}+${sortField.name} ${sortField.sortOrder}`;
+        reloadProjectTasks(q, true);
+    }, [query, sortField]);
 
     const prepareCardLanes = (tasks) => {
         for (const key in TASK_STATUS) {
@@ -118,17 +123,14 @@ const ProjectTasks = (props) => {
         setBoardData({ ...boardData, lanes: lanesData });
     }
 
-    const fetchProjectTasks = async (projectId) => {
-       
-        const query = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${projectId}  ORDER BY ${sortField.name} ${sortField.sortOrder}`;
+    const fetchProjectTasks = async (query) => {
         const tasks = await webService.doQuery(query);
         return tasks;
-        
     };
 
-    const reloadProjectTasks = (showLoader = false) => {
+    const reloadProjectTasks = (q,showLoader = false) => {
         setIsLoading(showLoader);
-        fetchProjectTasks(props?.projectId).then((result) => {
+        fetchProjectTasks(q).then((result) => {
             return result;
         })
         .then((tasks) => {
@@ -158,7 +160,7 @@ const ProjectTasks = (props) => {
         delete cardDetails['laneId'];
         webService.doUpdate(MOD_PROJECT_TASK, cardDetails)
         .then(() => {
-            reloadProjectTasks(false);
+            reloadProjectTasks(query, false);
         })
         .catch(function (taskError) {
             console.log("Error: ", taskError);
@@ -166,7 +168,7 @@ const ProjectTasks = (props) => {
     };
 
     const handleCardAdd = () => {
-        reloadProjectTasks(false);
+        reloadProjectTasks(query, false);
     };
 
     const handleOnCardClick = (taskId, metadata, laneId) => {
@@ -192,8 +194,26 @@ const ProjectTasks = (props) => {
         setSortField(newSort);
     }
 
-    const onSubmit = data => {
-       console.log(data);
+    const doFilter = data => {
+        let filterQuery = '';
+        for (const key in data) {
+            if (data.hasOwnProperty(key) && data[key] !=='') {
+                if(filterQuery){
+                    filterQuery = filterQuery +`${' AND '}+ ${key+'='}+ '${data[key]}'`;
+                }else{
+                    filterQuery = `${'AND '}+ ${key+'='}+ '${data[key]}'`;
+                }
+            }
+        }
+        if(filterQuery){
+            const q = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${props?.projectId} ${filterQuery}`;
+            setQuery(q);
+        }
+    };
+
+    const clearFilter = () => {
+       reset();
+       setQuery(defaultQuery);
     };
 
     return (
@@ -244,20 +264,27 @@ const ProjectTasks = (props) => {
                         </AccordionSummary>
                         <AccordionDetails>
                             <div className={'row'}>
-                                <form onSubmit={handleSubmit(onSubmit)} className={classes.root +' filterForm'} noValidate>
+                                <form onSubmit={handleSubmit(doFilter)} className={classes.root +' filterForm'} noValidate>
                                     <div className={'row'}>
                                         {React.Children.toArray(
                                             taskFilterFields.map((field) => {
-                                                const fieldInput = input(field, Controller, control, errors);
-                                                return (
-                                                    <div className={'col-md-2 mt-3'}>
-                                                        {fieldInput}
-                                                    </div>
-                                                )
+                                                if(field.name !== 'projectid'){
+                                                    field.default = '';
+                                                    field.mandatory = false;
+                                                    const fieldInput = input(field, Controller, control, errors);
+                                                    return (
+                                                        <div className={'col-md-2 mt-3'}>
+                                                            {fieldInput}
+                                                        </div>
+                                                    )
+                                                }else{
+                                                    return null;
+                                                }
                                             })
                                         )}
                                         <div className="col-md-4 mt-4">
                                             <Button type="submit" variant="contained" color="primary" className={'mt-4'}>Filter</Button>
+                                            <Button variant="contained" onClick={handleSubmit(clearFilter)} color="secondary" className={'mt-4 mx-1'}>Clear</Button>
                                         </div>
                                     </div>
                                 </form>
