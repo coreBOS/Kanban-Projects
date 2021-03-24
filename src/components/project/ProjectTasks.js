@@ -6,7 +6,7 @@ import { AddCardLink } from 'react-trello/src/styles/Base';
 import debug from "../../utils/debug";
 import CommentDialog from "../dialog/comment";
 import ProjectTaskCard from "../utils/Card";
-import AddTaskCardForm from "../utils/AddCard";
+import TaskCardForm from "../utils/TaskCardForm";
 import AddTaskLaneForm from "../utils/AddLane";
 import Loader from "../utils/Loader";
 //import AddCardLink from '../utils/AddCardLink';
@@ -28,6 +28,16 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 
@@ -54,6 +64,7 @@ const ProjectTasks = (props) => {
 
     const defaultQuery = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${props?.projectId}`;
     const [query, setQuery] = useState(defaultQuery);
+    const [cardOptionOpen, setCardOptionOpen] = React.useState(false);
 
 
     const handleAddCardLink = () => {
@@ -72,7 +83,7 @@ const ProjectTasks = (props) => {
     
     const components = {
         Card: ProjectTaskCard,
-        //NewCardForm: AddTaskCardForm,
+        //NewCardForm: TaskCardForm,
         NewLaneForm: AddTaskLaneForm,
         AddCardLink: AddTaskCardLink
     };
@@ -82,7 +93,10 @@ const ProjectTasks = (props) => {
         loadModuleFields(MOD_PROJECT_TASK).then((modDescribe) => {
             let filterFields = modDescribe?.filterFields?.fields??[];
             for(let index = 0; index < filterFields.length; index++) {
-                filterFields[index] = modDescribe?.fields.filter(field => field.name === filterFields[index])[0];
+                const filterField = modDescribe?.fields.filter(field => field.name === filterFields[index])[0];
+                if(filterField){
+                    filterFields[index] = JSON.parse(JSON.stringify(filterField));
+                }
             }
             setTaskFilterFields(filterFields);
             setTaskFields(modDescribe?.fields??[]);
@@ -167,15 +181,8 @@ const ProjectTasks = (props) => {
         });
     };
 
-    const handleCardAdd = () => {
+    const handleCardUpdate = () => {
         reloadProjectTasks(query, false);
-    };
-
-    const handleOnCardClick = (taskId, metadata, laneId) => {
-        setClickedProjectTaskId(taskId);
-        setClickedProjectTaskLaneId(laneId);
-        setClickedProjectTaskMetadata(metadata);
-        setOpenCommentDialog(true);
     };
 
     const handleDialogOnClose = () => {
@@ -215,6 +222,23 @@ const ProjectTasks = (props) => {
        reset();
        setQuery(defaultQuery);
     };
+
+    const handleCardClickOption = (taskId, metadata, laneId) => {
+        setClickedProjectTaskId(taskId);
+        setClickedProjectTaskLaneId(laneId);
+        setClickedProjectTaskMetadata(metadata);
+        setCardOptionOpen(true);
+    };
+    
+    const handleCardCloseOption = (close) => {
+        if(close){
+            setCardOptionOpen(!close);
+        }else{
+            setCardOptionOpen(close);
+            setOpenCommentDialog(!close);
+        }
+    };
+
 
     return (
         <>
@@ -304,8 +328,8 @@ const ProjectTasks = (props) => {
                     editable
                     //canAddLanes
                     //editLaneTitle
-                    onCardAdd={handleCardAdd}
-                    onCardClick={(cardId, metadata, laneId) => handleOnCardClick(cardId, metadata, laneId)}
+                    onCardAdd={handleCardUpdate}
+                    onCardClick={(cardId, metadata, laneId) => handleCardClickOption(cardId, metadata, laneId)}
                     data={boardData}
                     //onDataChange={shouldReceiveNewData}
                     eventBusHandle={setEventBus}
@@ -317,7 +341,41 @@ const ProjectTasks = (props) => {
                     tagStyle={{ fontSize: '80%' }}
                 />
                 {openCommentDialog ? <CommentDialog projectTaskMetadata={clickedProjectTaskMetadata} projectTaskLaneId={clickedProjectTaskLaneId} projectTaskId={clickedProjectTaskId} isOpen={openCommentDialog} handleDialogOnClose={handleDialogOnClose} commentFields={commentFields} /> : null}
-                {modal && <AddTaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardAdd={handleCardAdd} />}
+                {modal && <TaskCardForm toggle={toggle} isOpen={modal} project={props?.project} taskFields={taskFields} handleCardUpdate={handleCardUpdate} />}
+            </div>
+
+            <div className={'cardOptionModal'}>
+              <Dialog
+                open={cardOptionOpen}
+                onClose={() => handleCardCloseOption(true)}
+              >
+                <DialogContent>
+                <List
+                    component="nav"
+                    className={classes.root}
+                    >
+
+                    <ListItem button onClick={() => handleCardCloseOption(false)}>
+                        <ListItemIcon>
+                        <VisibilityIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="View" />
+                    </ListItem>
+                    <ListItem button onClick={() => handleCardCloseOption(true)}>
+                        <ListItemIcon>
+                        <EditIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Edit" />
+                    </ListItem>
+                    <ListItem button onClick={() => handleCardCloseOption(true)}>
+                        <ListItemIcon>
+                        <DeleteIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Delete" />
+                    </ListItem>
+                </List>
+                </DialogContent>
+              </Dialog>
             </div>
         </>
     )

@@ -5,7 +5,7 @@ import { dateParser } from "../../utils/lib/WSClientHelper";
 import { input } from "../../utils/input";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
-import Loader from "../utils/Loader";
+import Loader from "./Loader";
 import { MOD_PROJECT_TASK }  from '../../settings/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddTaskCardForm = (props) => {
+const TaskCardForm = (props) => {
     //console.log(props);
     //const {onCancel} = props;
     const classes = useStyles();
@@ -33,7 +33,7 @@ const AddTaskCardForm = (props) => {
         isOpen
       } = props;
 
-    const handleAdd = (data) => {
+    const handleCard = (data) => {
         data.projectid = props?.project?.id??'';
         if(data.startdate){
             data.startdate = dateParser(data.startdate); 
@@ -44,7 +44,7 @@ const AddTaskCardForm = (props) => {
         setIsLoading(true);
         webService.doCreate(MOD_PROJECT_TASK, data)
         .then(() => {
-            props.handleCardAdd();
+            props.handleCardUpdate(); 
             reset();
         })
         .catch(function (taskError) {
@@ -67,7 +67,7 @@ const AddTaskCardForm = (props) => {
                             <Loader />
                         }
                         <h5 className={'text-center'}>{props?.project?.projectname}</h5>
-                        <form onSubmit={handleSubmit(handleAdd)} className={classes.root} noValidate autoComplete="off" style={{padding: '0 5px'}}>
+                        <form onSubmit={handleSubmit(handleCard)} className={classes.root} noValidate autoComplete="off" style={{padding: '0 5px'}}>
         
                             {React.Children.toArray(
                                 props?.taskFields?.map((field) => {
@@ -93,4 +93,4 @@ const AddTaskCardForm = (props) => {
     
 }
 
-export default AddTaskCardForm;
+export default TaskCardForm;
