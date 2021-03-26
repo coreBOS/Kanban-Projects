@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { webService } from "../../utils/api/webservice";
 import {Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { dateParser } from "../../utils/lib/WSClientHelper";
@@ -25,7 +25,6 @@ const TaskCardForm = (props) => {
     const { handleSubmit, control, errors, reset } = formMethods;
     const [isLoading, setIsLoading] = useState(false);
 
-
     const {
         //buttonLabel,
         className,
@@ -33,11 +32,16 @@ const TaskCardForm = (props) => {
         isOpen
       } = props;
 
+    useEffect(() => {
+        reset(props?.projectTask??{});
+    }, [reset])
+
+
     const handleCard = async (data) => {
+        data.projectid = props?.project?.id??'';
         if(props.projectTask){
             data.id = props.projectTask.id;
         }
-        data.projectid = props?.project?.id??'';
         if(data.startdate){
             data.startdate = dateParser(data.startdate); 
         }
@@ -45,13 +49,15 @@ const TaskCardForm = (props) => {
             data.enddate = dateParser(data.enddate); 
         }
         setIsLoading(true);
-        if(props.projectTask){
-            await webService.doUpdate(MOD_PROJECT_TASK, data)
+        if(props.projectTask){ //Edit
+            const result = await webService.doUpdate(MOD_PROJECT_TASK, data);
+            reset(result);
+            props.handleCardUpdate();
         }else{
-            await webService.doCreate(MOD_PROJECT_TASK, data)
+            await webService.doCreate(MOD_PROJECT_TASK, data);
+            props.handleCardUpdate();
+            reset();
         }
-        props.handleCardUpdate(); 
-        reset();
         setIsLoading(false);
     };
 
@@ -72,9 +78,6 @@ const TaskCardForm = (props) => {
                             {React.Children.toArray(
                                 props?.taskFields?.map((field) => {
                                     if(field.name !== 'projectid'){
-                                        if(props.projectTask){
-                                            field.default = props.projectTask[field.name];
-                                        }
                                         return (
                                             input(field, Controller, control, errors)
                                         );
@@ -83,7 +86,7 @@ const TaskCardForm = (props) => {
                                 })
                             )}
                             <FormGroup className="w-50 mx-auto">
-                                <Button type="submit" variant="contained" color="primary" className={'w-100'}>Save</Button>
+                                <Button disabled={isLoading} type="submit" variant="contained" color="primary" className={'w-100'}>Save</Button>
                             </FormGroup>
                         </form>
                     </ModalBody>
