@@ -247,8 +247,13 @@ const ProjectTasks = (props) => {
                 setIsLoading(false);
                 toggle();
             })
+        }else if(action === 'delete'){
+            setIsLoading(true);
+            webService.doDelete(clickedProjectTaskId).then(result => {
+                setIsLoading(false);
+                handleCardUpdate();
+            })
         }
-        //delete condition
     };
 
     const openCommentModal = () => {
