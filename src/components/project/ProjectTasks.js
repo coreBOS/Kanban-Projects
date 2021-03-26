@@ -211,14 +211,16 @@ const ProjectTasks = (props) => {
         for (const key in data) {
             if (data.hasOwnProperty(key) && data[key] !=='') {
                 if(filterQuery){
-                    filterQuery = filterQuery +`${' AND '}+ ${key+'='}+ '${data[key]}'`;
+                    filterQuery = filterQuery +`${' AND '} ${key+' LIKE '} '%${data[key]}%'`;
                 }else{
-                    filterQuery = `${'AND '}+ ${key+'='}+ '${data[key]}'`;
+                    filterQuery = `(${key+' LIKE '} '%${data[key]}%'`;
                 }
             }
         }
         if(filterQuery){
-            const q = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${props?.projectId} ${filterQuery}`;
+            filterQuery = `${filterQuery})`;
+            let q = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE ${filterQuery} AND projectid = ${props?.projectId}`;
+            q = encodeURIComponent(q);
             setQuery(q);
         }
     };
