@@ -29,12 +29,13 @@ const TaskCardForm = (props) => {
         //buttonLabel,
         className,
         toggle,
-        isOpen
+        isOpen,
+        projectTask
       } = props;
 
     useEffect(() => {
-        reset(props?.projectTask??{});
-    }, [reset])
+        reset(projectTask??{});
+    }, [reset, projectTask])
 
 
     const handleCard = async (data) => {

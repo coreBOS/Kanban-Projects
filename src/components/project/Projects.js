@@ -80,7 +80,7 @@ const Projects = () => {
                     rowHeaders={['rowNum']}  
                 />
             </div>
-            <div className={'position-fixed w-100 mx-n3'} style={{ bottom: '0px', 'z-index': '100', background: '#ddd' }}>
+            <div className={'position-fixed w-100 mx-n3'} style={{ bottom: '0px', 'zIndex': '100', background: '#ddd' }}>
                 {projects && projects.length > 0 &&
                     <div className="my-2 w-25 mx-auto text-center">
                         <Pagination paginate={paginate} page={page} isLoading={isLoading}  />
