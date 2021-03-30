@@ -6,6 +6,7 @@ import 'tui-grid/dist/tui-grid.css';
 import Grid from '@toast-ui/react-grid';
 //import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import Loader from "../utils/Loader";
+import Pagination from '../utils/pagination';
 
 import {
     PROJECT,
@@ -15,12 +16,10 @@ import {
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [offset, setOffset] = useState(0);
-    /* eslint-disable no-unused-vars */
     const [page, setPage] = useState(1);
-    /* eslint-disable no-unused-vars */
-    const [perPage, setPerPage] = useState(20);
+    const [perPage] = useState(20);
     const [isLoading, setIsLoading] = useState(false);
-    const searchQuery = `SELECT * from project ORDER BY id DESC LIMIT ${offset}, ${perPage}`;
+    const [searchQuery, setSearchQuery] = useState(`SELECT * from project ORDER BY id DESC LIMIT ${offset}, ${perPage}`);
 
 
     const projectColumns = [
@@ -57,36 +56,38 @@ const Projects = () => {
     };
 
     const paginate = (pageNumber, direction) => {
-        let currentOffset = offset;
-        setPage(pageNumber + direction);
-        let newOffset = direction >= 0 ? currentOffset + perPage : currentOffset - perPage;
+        let newOffset = direction >= 0 ? offset + perPage : offset - perPage;
         newOffset = newOffset >= 0 ? newOffset : 0;
         setOffset(newOffset);
+        setPage(pageNumber + direction);
         const q = `SELECT * from project ORDER BY id DESC LIMIT ${newOffset}, ${perPage}`;
-        fetchProjects(q);
+        setSearchQuery(q);
     };
 
 
     return (
-        <div className="container">
-            { isLoading &&
-                <Loader />
-            }
-            <Grid
-                data={projects}
-                columns={projectColumns}
-                usageStatistics={false}
-                rowHeight={25}
-                heightResizable={true}
-                rowHeaders={['rowNum']}  
-            />
-            {projects && projects.length > 0 &&
-                <div className="my-3 d-flex float-right">
-                    <button className="btn btn-primary mx-1" onClick={() => paginate(page, -1)} disabled={ page <= 1 || isLoading } >Previous</button>
-                    <button className="btn btn-primary mx-1" onClick={() => paginate(page, 1)} next="true" disabled={ isLoading } >Next</button>
-                </div>
-            }
-        </div>
+        <>
+            <div className="container">
+                { isLoading &&
+                    <Loader />
+                }
+                <Grid
+                    data={projects}
+                    columns={projectColumns}
+                    usageStatistics={false}
+                    rowHeight={25}
+                    heightResizable={true}
+                    rowHeaders={['rowNum']}  
+                />
+            </div>
+            <div className={'position-fixed w-100 mx-n3'} style={{ bottom: '0px', 'z-index': '100', background: '#ddd' }}>
+                {projects && projects.length > 0 &&
+                    <div className="my-2 w-25 mx-auto text-center">
+                        <Pagination paginate={paginate} page={page} isLoading={isLoading}  />
+                    </div>
+                }
+            </div>
+        </>
     )
 };
 
