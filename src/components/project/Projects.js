@@ -4,9 +4,8 @@ import React, {useState, useEffect } from "react";
 import {webService} from "../../utils/api/webservice";
 import 'tui-grid/dist/tui-grid.css';
 import Grid from '@toast-ui/react-grid';
-//import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import Loader from "../utils/Loader";
-import Pagination from '../utils/pagination';
+import Pagination from '../utils/Pagination';
 
 import {
     PROJECT,
@@ -19,7 +18,7 @@ const Projects = () => {
     const [page, setPage] = useState(1);
     const [perPage] = useState(20);
     const [isLoading, setIsLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(`SELECT * from project ORDER BY id DESC LIMIT ${offset}, ${perPage}`);
+    const [query] = useState(`SELECT * from project ORDER BY id DESC`);
 
 
     const projectColumns = [
@@ -39,12 +38,15 @@ const Projects = () => {
     ];
 
     useEffect(() => {
-        fetchProjects(searchQuery);
-    }, [searchQuery]);
+        /* eslint-disable react-hooks/exhaustive-deps */
+        
+        fetchProjects(query, offset);
+    }, [query, offset]);
     
-    const fetchProjects = (query) => {
+    const fetchProjects = (searchQuery, _offset) => {
         setIsLoading(true);
-        webService.doQuery(query).then((result) => {
+        const q = searchQuery+` LIMIT ${_offset}, ${perPage}`;
+        webService.doQuery(q).then((result) => {
             setProjects(result);
         })
         .catch(function (error) {
@@ -53,15 +55,6 @@ const Projects = () => {
         .finally(() => {
             setIsLoading(false);
         })
-    };
-
-    const paginate = (pageNumber, direction) => {
-        let newOffset = direction >= 0 ? offset + perPage : offset - perPage;
-        newOffset = newOffset >= 0 ? newOffset : 0;
-        setOffset(newOffset);
-        setPage(pageNumber + direction);
-        const q = `SELECT * from project ORDER BY id DESC LIMIT ${newOffset}, ${perPage}`;
-        setSearchQuery(q);
     };
 
 
@@ -83,7 +76,7 @@ const Projects = () => {
             <div className={'position-fixed w-100 mx-n3'} style={{ bottom: '0px', 'zIndex': '100', background: '#ddd' }}>
                 {projects && projects.length > 0 &&
                     <div className="my-2 w-25 mx-auto text-center">
-                        <Pagination paginate={paginate} page={page} isLoading={isLoading}  />
+                        <Pagination offset={offset} setOffset={setOffset} page={page} setPage={setPage} perPage={perPage} isLoading={isLoading}  />
                     </div>
                 }
             </div>

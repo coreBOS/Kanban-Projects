@@ -38,6 +38,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Pagination from '../utils/Pagination';
 
 
 
@@ -62,6 +63,10 @@ const ProjectTasks = (props) => {
     const [sortField, setSortField] = useState({name: 'id', sortOrder: 'DESC', label: 'ID'});
     const formMethods = useForm();
     const { handleSubmit, control, errors, reset } = formMethods;
+
+    const [offset, setOffset] = useState(0);
+    const [page, setPage] = useState(1);
+    const [perPage] = useState(20);
 
     const defaultQuery = `SELECT * FROM ${MOD_PROJECT_TASK} WHERE projectid = ${props?.projectId}`;
     const [query, setQuery] = useState(defaultQuery);
@@ -113,9 +118,9 @@ const ProjectTasks = (props) => {
 
     useEffect(() => {
         /* eslint-disable react-hooks/exhaustive-deps */
-        const q = query +`${' ORDER BY '}+${sortField.name} ${sortField.sortOrder}`;
-        reloadProjectTasks(q, true);
-    }, [query, sortField]);
+        
+        reloadProjectTasks(query, offset, true);
+    }, [query, offset, sortField]);
 
     const prepareCardLanes = (tasks) => {
         for (const key in TASK_STATUS) {
@@ -142,12 +147,13 @@ const ProjectTasks = (props) => {
         setBoardData({ ...boardData, lanes: lanesData });
     }
 
-    const fetchProjectTasks = async (query) => {
-        const tasks = await webService.doQuery(query);
+    const fetchProjectTasks = async (searchquery) => {
+        const tasks = await webService.doQuery(searchquery);
         return tasks;
     };
 
-    const reloadProjectTasks = (q,showLoader = false) => {
+    const reloadProjectTasks = (searchquery, _offset, showLoader = false) => {
+        const q = searchquery +`${' ORDER BY '} ${sortField.name} ${sortField.sortOrder} LIMIT ${_offset}, ${perPage}`;
         setIsLoading(showLoader);
         fetchProjectTasks(q).then((result) => {
             return result;
@@ -179,7 +185,7 @@ const ProjectTasks = (props) => {
         delete cardDetails['laneId'];
         webService.doUpdate(MOD_PROJECT_TASK, cardDetails)
         .then(() => {
-            reloadProjectTasks(query, false);
+            reloadProjectTasks(query, offset, false);
         })
         .catch(function (taskError) {
             console.log("Error: ", taskError);
@@ -187,7 +193,7 @@ const ProjectTasks = (props) => {
     };
 
     const handleCardUpdate = () => {
-        reloadProjectTasks(query, false);
+        reloadProjectTasks(query, offset, false);
     };
 
     const handleDialogOnClose = () => {
@@ -266,7 +272,7 @@ const ProjectTasks = (props) => {
         <>
             <h3 className="text-center"> {props?.project?.projectname} </h3>
             <div className={'row'}>
-                <div className={'col-md-4'}>
+                <div className={'col-md-3 col-12'}>
                     {taskFields.length > 0 && 
                         <div className={'d-flex'}>
                                 <FormControl variant="outlined" className={classes.formControl}>
@@ -294,6 +300,13 @@ const ProjectTasks = (props) => {
                                         }
                                     </IconButton>
                                 </div>
+                        </div>
+                    }
+                </div>
+                <div className={'col-md-2 col-12'}>
+                    {boardData && boardData.lanes.length > 0  && 
+                        <div className="text-center mt-3" style={{ background: '#ddd' }}>
+                            <Pagination offset={offset} setOffset={setOffset} page={page} setPage={setPage} perPage={perPage} isLoading={isLoading}  />
                         </div>
                     }
                 </div>
